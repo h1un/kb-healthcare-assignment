@@ -1,4 +1,5 @@
-import { createRootRoute, createRoute, createRouter, Outlet } from "@tanstack/react-router";
+import { createRootRoute, createRoute, createRouter, Navigate, Outlet } from "@tanstack/react-router";
+import { useAuth } from "@/features/auth/AuthProvider";
 import { DashboardPage } from "@/pages/dashboard/DashboardPage";
 import { MemberPage } from "@/pages/member/MemberPage";
 import { NotFoundPage } from "@/pages/not-found/NotFoundPage";
@@ -8,6 +9,20 @@ import { TaskListPage } from "@/pages/task-list/TaskListPage";
 import { AppLayout } from "@/widgets/app-layout/AppLayout";
 
 function AppShell() {
+  const { status, isAuthenticated } = useAuth();
+
+  if (status === "checking") {
+    return (
+      <div className="flex min-h-svh items-center justify-center bg-background px-6 text-center text-sm font-bold text-muted-foreground">
+        로그인 상태를 확인하고 있어요.
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/sign-in" replace />;
+  }
+
   return (
     <AppLayout>
       <Outlet />

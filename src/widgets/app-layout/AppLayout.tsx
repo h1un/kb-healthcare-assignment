@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { BellIcon, LayoutDashboardIcon, ListChecksIcon, LogInIcon, UserRoundIcon } from "lucide-react";
 import type { ReactNode } from "react";
+import { useAuth } from "@/features/auth/AuthProvider";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 
@@ -14,8 +15,11 @@ const navItems = [
 ] as const;
 
 export function AppLayout({ children }: AppLayoutProps) {
+  const { isAuthenticated } = useAuth();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const pageTitle = pathname.startsWith("/task") ? "할 일" : pathname.startsWith("/member") ? "회원정보" : "대시보드";
+  const authLink = isAuthenticated ? "/member" : "/sign-in";
+  const AuthIcon = isAuthenticated ? UserRoundIcon : LogInIcon;
 
   return (
     <div className="min-h-svh bg-background text-foreground">
@@ -26,9 +30,9 @@ export function AppLayout({ children }: AppLayoutProps) {
           </Link>
           <h1 className="text-xl font-black tracking-normal text-kb-ink">{pageTitle}</h1>
           <div className="flex w-20 justify-end gap-1">
-            <Button variant="ghost" size="icon-lg" aria-label="로그인" asChild>
-              <Link to="/sign-in">
-                <LogInIcon data-icon="inline-start" />
+            <Button variant="ghost" size="icon-lg" aria-label={isAuthenticated ? "회원정보" : "로그인"} asChild>
+              <Link to={authLink}>
+                <AuthIcon data-icon="inline-start" />
               </Link>
             </Button>
             <Button variant="ghost" size="icon-lg" aria-label="알림">
