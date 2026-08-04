@@ -41,7 +41,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         <main className="flex-1 px-7 py-7 pb-28">{children}</main>
 
         <nav className="fixed inset-x-0 bottom-0 z-30 mx-auto w-full max-w-[720px] border-t border-border bg-card/95 px-8 py-3 backdrop-blur">
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
@@ -60,16 +60,6 @@ export function AppLayout({ children }: AppLayoutProps) {
                 </Link>
               );
             })}
-            <Link
-              to="/member"
-              className={cn(
-                "flex flex-col items-center justify-center gap-1 rounded-2xl px-3 py-2 text-sm font-extrabold text-muted-foreground transition",
-                pathname.startsWith("/member") && "text-kb-ink",
-              )}
-            >
-              <UserRoundIcon className="size-6" aria-hidden="true" />
-              <span>회원정보</span>
-            </Link>
           </div>
         </nav>
       </div>

@@ -39,11 +39,11 @@ test("삭제 확인 입력값이 할 일 ID와 같을 때만 삭제할 수 있�
   await page.getByRole("button", { name: "로그인" }).click();
   await expect(page.getByText("29 / 87 완료")).toBeVisible();
 
-  await page.getByRole("link", { name: /할 일 목록 보러가기/ }).click();
+  await page.getByRole("link", { name: "할 일 목록으로 이동" }).click();
   await page.getByRole("link", { name: /물 2L 마시기/ }).click();
   await page.getByRole("button", { name: "삭제하기" }).click();
 
-  const deleteButton = page.getByRole("button", { name: "삭제", exact: true });
+  const deleteButton = page.getByRole("button", { name: "제출", exact: true });
   await expect(deleteButton).toBeDisabled();
 
   await page.getByLabel("할 일 ID").fill("TASK-002");

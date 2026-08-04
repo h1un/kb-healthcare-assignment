@@ -58,7 +58,7 @@ export function DeleteTaskDialog({ taskId }: DeleteTaskDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="h-12 rounded-2xl font-black" variant="destructive">
+        <Button className="h-12 rounded-2xl bg-destructive font-black text-destructive-foreground hover:bg-destructive/90" variant="destructive">
           <Trash2Icon data-icon="inline-start" />
           삭제하기
         </Button>
@@ -87,7 +87,7 @@ export function DeleteTaskDialog({ taskId }: DeleteTaskDialogProps) {
                 disabled={deleteMutation.isPending}
                 autoFocus
               />
-              <FieldDescription>{errorMessage ?? `${taskId} 입력 시 삭제 버튼이 활성화됩니다.`}</FieldDescription>
+              <FieldDescription>{errorMessage ?? `${taskId} 입력 시 제출 버튼이 활성화됩니다.`}</FieldDescription>
             </Field>
           </FieldGroup>
           <DialogFooter>
@@ -95,12 +95,12 @@ export function DeleteTaskDialog({ taskId }: DeleteTaskDialogProps) {
               취소
             </Button>
             <Button
-              className="h-14 rounded-[1.25rem] text-base font-black"
+              className="h-14 rounded-[1.25rem] bg-destructive text-base font-black text-destructive-foreground hover:bg-destructive/90 disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100"
               type="submit"
               variant="destructive"
               disabled={!isConfirmed || deleteMutation.isPending}
             >
-              {deleteMutation.isPending ? "삭제 중..." : "삭제"}
+              {deleteMutation.isPending ? "삭제 중..." : "제출"}
             </Button>
           </DialogFooter>
         </form>

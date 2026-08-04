@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { ArrowRightIcon, CheckCircle2Icon, CircleIcon, ClipboardListIcon } from "lucide-react";
+import { ArrowRightIcon, CheckIcon, CircleIcon, ClipboardListIcon } from "lucide-react";
 import { getDashboard } from "@/entities/dashboard/api";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
+import { cn } from "@/shared/lib/utils";
 import { Skeleton } from "@/shared/ui/skeleton";
 
 export function DashboardPage() {
@@ -16,9 +17,9 @@ export function DashboardPage() {
   const rest = data?.numOfRestTask ?? 0;
   const progress = total > 0 ? Math.round((done / total) * 100) : 0;
   const stats = [
-    { label: "일", value: total, description: "전체 할 일", icon: ClipboardListIcon },
-    { label: "해야 할 일", value: rest, description: "아직 남았어요", icon: CircleIcon },
-    { label: "한 일", value: done, description: "잘 하고 있어요", icon: CheckCircle2Icon },
+    { label: "일", value: total, description: "전체 할 일", icon: ClipboardListIcon, iconClassName: "bg-muted text-kb-ink" },
+    { label: "해야할 일", value: rest, description: "아직 남았어요", icon: CircleIcon, iconClassName: "bg-kb-pink text-destructive" },
+    { label: "한 일", value: done, description: "완료했어요", icon: CheckIcon, iconClassName: "bg-kb-blue/15 text-kb-blue" },
   ];
 
   return (
@@ -52,8 +53,8 @@ export function DashboardPage() {
           return (
             <Card key={stat.label} className="rounded-[1.75rem] border-0 px-1 py-5 shadow-[0_16px_40px_rgba(35,40,50,0.06)]">
               <CardHeader className="px-5">
-                <div className="grid size-11 place-items-center rounded-full bg-muted">
-                  <Icon className="size-5 text-kb-ink" aria-hidden="true" />
+                <div className={cn("grid size-11 place-items-center rounded-full", stat.iconClassName)}>
+                  <Icon className="size-5" aria-hidden="true" />
                 </div>
               </CardHeader>
               <CardContent className="px-5">
@@ -65,19 +66,6 @@ export function DashboardPage() {
           );
         })}
       </div>
-
-      <Link
-        to="/task"
-        className="flex items-center justify-between rounded-[2rem] bg-card p-7 shadow-[0_16px_40px_rgba(35,40,50,0.06)]"
-      >
-        <div>
-          <h2 className="text-xl font-black text-kb-ink">할 일 목록 보러가기</h2>
-          <p className="mt-3 text-base font-bold text-muted-foreground">오늘 해야 할 일을 확인해요</p>
-        </div>
-        <span className="grid size-14 place-items-center rounded-full bg-kb-yellow text-kb-ink">
-          <ArrowRightIcon aria-hidden="true" />
-        </span>
-      </Link>
 
       <Card className="rounded-[2rem] border-0 bg-kb-pink p-3 shadow-none">
         <CardContent>

@@ -130,7 +130,7 @@ function TaskCard({ task }: { task: TaskItem }) {
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
           <h2 className="truncate text-xl font-black text-kb-ink">{task.title}</h2>
-          <Badge variant={isDone ? "secondary" : "destructive"}>{isDone ? "완료" : "해야할 일"}</Badge>
+          <Badge variant={isDone ? "secondary" : "destructive"}>{isDone ? "완료" : "해야 할 일"}</Badge>
         </div>
         <p className="mt-2 truncate text-base font-bold text-muted-foreground">{task.memo}</p>
       </div>
