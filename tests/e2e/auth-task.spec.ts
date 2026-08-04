@@ -12,7 +12,7 @@ test("로그인 후 대시보드와 할 일 상세를 확인한다", async ({ pa
   await page.getByRole("link", { name: "할 일 목록으로 이동" }).click();
 
   await expect(page.getByText(/불러온 \d+개의 할 일/)).toBeVisible();
-  await page.getByRole("link", { name: /아침 스트레칭 10분/ }).click();
+  await page.getByRole("link", { name: /아침 스트레칭 10분/ }).first().click();
 
   await expect(page.getByText("TASK-001")).toBeVisible();
   await expect(page.getByRole("heading", { name: "아침 스트레칭 10분" })).toBeVisible();

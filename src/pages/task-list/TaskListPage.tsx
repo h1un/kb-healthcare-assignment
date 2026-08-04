@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useVirtualizer } from "@tanstack/react-virtual";
+import { useWindowVirtualizer } from "@tanstack/react-virtual";
 import { Link } from "@tanstack/react-router";
 import { ChevronRightIcon, CheckIcon, CircleIcon, ClipboardListIcon, RefreshCwIcon } from "lucide-react";
 import { useEffect, useRef } from "react";
@@ -12,7 +12,7 @@ import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTi
 import { Skeleton } from "@/shared/ui/skeleton";
 
 export function TaskListPage() {
-  const scrollParentRef = useRef<HTMLDivElement | null>(null);
+  const listRef = useRef<HTMLDivElement | null>(null);
   const { data, fetchNextPage, hasNextPage, isError, isFetchingNextPage, isLoading, refetch } = useInfiniteQuery({
     queryKey: ["tasks"],
     queryFn: ({ pageParam }) => getTasks(pageParam),
@@ -21,11 +21,11 @@ export function TaskListPage() {
   });
   const tasks = data?.pages.flatMap((page) => page.data) ?? [];
   const rowCount = hasNextPage ? tasks.length + 1 : tasks.length;
-  const rowVirtualizer = useVirtualizer({
+  const rowVirtualizer = useWindowVirtualizer({
     count: rowCount,
-    getScrollElement: () => scrollParentRef.current,
     estimateSize: () => 132,
     overscan: 5,
+    scrollMargin: listRef.current?.offsetTop ?? 0,
   });
   const virtualItems = rowVirtualizer.getVirtualItems();
   const lastVirtualIndex = virtualItems.at(-1)?.index;
@@ -87,27 +87,25 @@ export function TaskListPage() {
       <p className="text-sm font-black text-muted-foreground">
         불러온 <span className="text-kb-ink">{tasks.length}</span>개의 할 일
       </p>
-      <div ref={scrollParentRef} className="h-[calc(100svh-190px)] overflow-auto pr-1">
-        <div className="relative w-full" style={{ height: `${rowVirtualizer.getTotalSize()}px` }}>
-          {virtualItems.map((virtualItem) => {
-            const task = tasks[virtualItem.index];
+      <div ref={listRef} className="relative w-full" style={{ height: `${rowVirtualizer.getTotalSize()}px` }}>
+        {virtualItems.map((virtualItem) => {
+          const task = tasks[virtualItem.index];
 
-            return (
-              <div
-                key={virtualItem.key}
-                className="absolute left-0 top-0 w-full"
-                style={{
-                  height: `${virtualItem.size}px`,
-                  transform: `translateY(${virtualItem.start}px)`,
-                }}
-              >
-                {task ? <TaskCard task={task} /> : <Skeleton className="h-[116px] rounded-[2rem]" />}
-              </div>
-            );
-          })}
-        </div>
-        {isFetchingNextPage && <p className="py-4 text-center text-sm font-bold text-muted-foreground">더 불러오는 중...</p>}
+          return (
+            <div
+              key={virtualItem.key}
+              className="absolute left-0 top-0 w-full"
+              style={{
+                height: `${virtualItem.size}px`,
+                transform: `translateY(${virtualItem.start - rowVirtualizer.options.scrollMargin}px)`,
+              }}
+            >
+              {task ? <TaskCard task={task} /> : <Skeleton className="h-[116px] rounded-[2rem]" />}
+            </div>
+          );
+        })}
       </div>
+      {isFetchingNextPage && <p className="py-4 text-center text-sm font-bold text-muted-foreground">더 불러오는 중...</p>}
     </section>
   );
 }
