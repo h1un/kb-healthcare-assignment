@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { BellIcon, LayoutDashboardIcon, ListChecksIcon, LogInIcon, UserRoundIcon } from "lucide-react";
+import { LayoutDashboardIcon, ListChecksIcon, LogInIcon, UserRoundIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { useAuth } from "@/features/auth/AuthProvider";
 import { cn } from "@/shared/lib/utils";
@@ -34,9 +34,6 @@ export function AppLayout({ children }: AppLayoutProps) {
               <Link to={authLink}>
                 <AuthIcon data-icon="inline-start" />
               </Link>
-            </Button>
-            <Button variant="ghost" size="icon-lg" aria-label="알림">
-              <BellIcon data-icon="inline-start" />
             </Button>
           </div>
         </header>

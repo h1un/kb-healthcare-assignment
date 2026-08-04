@@ -49,6 +49,7 @@ export function SignInPage() {
       setErrorMessage(error instanceof ApiError ? error.errorMessage : "로그인 요청을 처리하지 못했습니다.");
     }
   });
+  const closeErrorDialog = () => setErrorMessage(null);
 
   return (
     <main className="flex min-h-svh items-center justify-center bg-background px-6 py-10">
@@ -92,14 +93,23 @@ export function SignInPage() {
         </form>
       </section>
 
-      <AlertDialog open={Boolean(errorMessage)} onOpenChange={(open) => !open && setErrorMessage(null)}>
-        <AlertDialogContent>
+      <AlertDialog open={Boolean(errorMessage)} onOpenChange={(open) => !open && closeErrorDialog()}>
+        <AlertDialogContent
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              closeErrorDialog();
+            }
+          }}
+        >
           <AlertDialogHeader>
-            <AlertDialogTitle>로그인할 수 없어요</AlertDialogTitle>
-            <AlertDialogDescription>{errorMessage}</AlertDialogDescription>
+            <AlertDialogTitle>로그인할 수 없어요.</AlertDialogTitle>
+            <AlertDialogDescription>{errorMessage ?? "입력한 정보를 다시 확인해주세요."}</AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction onClick={() => setErrorMessage(null)}>확인</AlertDialogAction>
+          <AlertDialogFooter className="grid-cols-1">
+            <AlertDialogAction autoFocus onClick={closeErrorDialog}>
+              확인
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

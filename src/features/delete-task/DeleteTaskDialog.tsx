@@ -47,6 +47,13 @@ export function DeleteTaskDialog({ taskId }: DeleteTaskDialogProps) {
       setErrorMessage(null);
     }
   }, [open]);
+  const handleDelete = () => {
+    if (!isConfirmed || deleteMutation.isPending) {
+      return;
+    }
+
+    deleteMutation.mutate();
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -56,37 +63,47 @@ export function DeleteTaskDialog({ taskId }: DeleteTaskDialogProps) {
           삭제하기
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent showCloseButton={false}>
         <DialogHeader>
           <DialogTitle>할 일을 삭제할까요?</DialogTitle>
           <DialogDescription>삭제하려면 아래 입력창에 할 일 ID를 그대로 입력해주세요.</DialogDescription>
         </DialogHeader>
-        <FieldGroup>
-          <Field data-invalid={Boolean(errorMessage) || undefined}>
-            <FieldLabel htmlFor="task-delete-confirm">할 일 ID</FieldLabel>
-            <Input
-              id="task-delete-confirm"
-              value={confirmValue}
-              onChange={(event) => setConfirmValue(event.target.value)}
-              placeholder={taskId}
-              aria-invalid={Boolean(errorMessage)}
-              disabled={deleteMutation.isPending}
-            />
-            <FieldDescription>{errorMessage ?? `${taskId} 입력 시 삭제 버튼이 활성화됩니다.`}</FieldDescription>
-          </Field>
-        </FieldGroup>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)} disabled={deleteMutation.isPending}>
-            취소
-          </Button>
-          <Button
-            variant="destructive"
-            onClick={() => deleteMutation.mutate()}
-            disabled={!isConfirmed || deleteMutation.isPending}
-          >
-            {deleteMutation.isPending ? "삭제 중..." : "삭제"}
-          </Button>
-        </DialogFooter>
+        <form
+          className="flex flex-col gap-5"
+          onSubmit={(event) => {
+            event.preventDefault();
+            handleDelete();
+          }}
+        >
+          <FieldGroup>
+            <Field data-invalid={Boolean(errorMessage) || undefined}>
+              <FieldLabel htmlFor="task-delete-confirm">할 일 ID</FieldLabel>
+              <Input
+                id="task-delete-confirm"
+                value={confirmValue}
+                onChange={(event) => setConfirmValue(event.target.value)}
+                placeholder={taskId}
+                aria-invalid={Boolean(errorMessage)}
+                disabled={deleteMutation.isPending}
+                autoFocus
+              />
+              <FieldDescription>{errorMessage ?? `${taskId} 입력 시 삭제 버튼이 활성화됩니다.`}</FieldDescription>
+            </Field>
+          </FieldGroup>
+          <DialogFooter>
+            <Button className="h-14 rounded-[1.25rem] bg-muted text-base font-black text-muted-foreground hover:bg-muted/80" type="button" variant="outline" onClick={() => setOpen(false)} disabled={deleteMutation.isPending}>
+              취소
+            </Button>
+            <Button
+              className="h-14 rounded-[1.25rem] text-base font-black"
+              type="submit"
+              variant="destructive"
+              disabled={!isConfirmed || deleteMutation.isPending}
+            >
+              {deleteMutation.isPending ? "삭제 중..." : "삭제"}
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );

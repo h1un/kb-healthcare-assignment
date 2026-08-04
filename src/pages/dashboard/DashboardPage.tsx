@@ -23,8 +23,17 @@ export function DashboardPage() {
 
   return (
     <section className="flex flex-col gap-6">
-      <div className="min-h-[300px] rounded-[2rem] bg-kb-yellow-soft bg-[url('/dashboard-hero-bg.png')] bg-[length:min(240px,44%)_auto] bg-[right_24px_bottom_42px] bg-no-repeat p-8 text-kb-ink">
-        <p className="text-sm font-black">오늘의 리듬</p>
+      <Link
+        to="/task"
+        aria-label="할 일 목록으로 이동"
+        className="group min-h-[300px] rounded-[2rem] bg-kb-yellow-soft bg-[url('/dashboard-hero-bg.png')] bg-[length:min(240px,44%)_auto] bg-[right_24px_bottom_42px] bg-no-repeat p-8 text-kb-ink shadow-[0_16px_40px_rgba(35,40,50,0.06)] transition hover:-translate-y-0.5 hover:shadow-[0_20px_48px_rgba(35,40,50,0.09)] focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-kb-yellow/60"
+      >
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-sm font-black">오늘의 리듬</p>
+          <span className="grid size-10 place-items-center rounded-full bg-card/75 transition group-hover:bg-card">
+            <ArrowRightIcon aria-hidden="true" />
+          </span>
+        </div>
         <h2 className="mt-3 max-w-[360px] text-3xl font-black leading-tight">꾸준함이 건강을 만들어요</h2>
         <div className="mt-10">
           {isLoading ? <Skeleton className="h-[72px] w-32 rounded-2xl" /> : <strong className="text-6xl font-black leading-none">{progress}</strong>}
@@ -34,7 +43,7 @@ export function DashboardPage() {
         <div className="mt-8 h-3 rounded-full bg-kb-yellow/50">
           <div className="h-full rounded-full bg-kb-ink/75 transition-[width]" style={{ width: `${progress}%` }} />
         </div>
-      </div>
+      </Link>
 
       <div className="grid grid-cols-3 gap-4">
         {stats.map((stat) => {
