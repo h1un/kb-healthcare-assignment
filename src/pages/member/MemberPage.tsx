@@ -1,6 +1,46 @@
+import { useQuery } from "@tanstack/react-query";
 import { UserRoundIcon } from "lucide-react";
+import { getUser } from "@/entities/user/api";
+import { Button } from "@/shared/ui/button";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/shared/ui/empty";
+import { Skeleton } from "@/shared/ui/skeleton";
 
 export function MemberPage() {
+  const { data, isError, isLoading, refetch } = useQuery({
+    queryKey: ["user"],
+    queryFn: getUser,
+  });
+
+  if (isLoading) {
+    return (
+      <section className="grid grid-cols-[auto_1fr] items-center gap-6 rounded-[2rem] bg-card p-7 shadow-[0_16px_40px_rgba(35,40,50,0.06)]">
+        <Skeleton className="size-24 rounded-[2rem]" />
+        <div>
+          <Skeleton className="h-5 w-20 rounded-xl" />
+          <Skeleton className="mt-3 h-8 w-36 rounded-2xl" />
+          <Skeleton className="mt-3 h-5 w-full rounded-xl" />
+        </div>
+      </section>
+    );
+  }
+
+  if (isError || !data) {
+    return (
+      <Empty className="min-h-[440px] rounded-[2rem] bg-card">
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <UserRoundIcon aria-hidden="true" />
+          </EmptyMedia>
+          <EmptyTitle>회원정보를 불러오지 못했어요</EmptyTitle>
+          <EmptyDescription>잠시 후 다시 시도해주세요.</EmptyDescription>
+        </EmptyHeader>
+        <EmptyContent>
+          <Button onClick={() => void refetch()}>다시 불러오기</Button>
+        </EmptyContent>
+      </Empty>
+    );
+  }
+
   return (
     <section className="grid grid-cols-[auto_1fr] items-center gap-6 rounded-[2rem] bg-card p-7 shadow-[0_16px_40px_rgba(35,40,50,0.06)]">
       <div className="grid size-24 place-items-center rounded-[2rem] bg-kb-yellow text-kb-ink">
@@ -8,8 +48,8 @@ export function MemberPage() {
       </div>
       <div>
         <p className="text-sm font-black text-muted-foreground">Member</p>
-        <h2 className="mt-3 text-2xl font-black text-kb-ink">케어 매니저</h2>
-        <p className="mt-3 text-sm font-bold leading-relaxed text-muted-foreground">KB헬스케어 케어 태스크 운영 담당자</p>
+        <h2 className="mt-3 text-2xl font-black text-kb-ink">{data.name}</h2>
+        <p className="mt-3 text-sm font-bold leading-relaxed text-muted-foreground">{data.memo}</p>
       </div>
     </section>
   );
