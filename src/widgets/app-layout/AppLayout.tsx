@@ -21,7 +21,9 @@ export function AppLayout({ children }: AppLayoutProps) {
     <div className="min-h-svh bg-background text-foreground">
       <div className="mx-auto flex min-h-svh w-full max-w-[720px] flex-col bg-background shadow-[0_0_0_1px_var(--border)]">
         <header className="sticky top-0 z-20 flex h-20 items-center justify-between border-b border-border bg-card/95 px-7 backdrop-blur">
-          <div className="w-20" />
+          <Link to="/" aria-label="대시보드" className="flex w-20 items-center">
+            <img src="/logo_text.svg" alt="KB O'CARE" className="h-6 w-auto" />
+          </Link>
           <h1 className="text-xl font-black tracking-normal text-kb-ink">{pageTitle}</h1>
           <div className="flex w-20 justify-end gap-1">
             <Button variant="ghost" size="icon-lg" aria-label="로그인" asChild>

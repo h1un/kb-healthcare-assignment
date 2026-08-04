@@ -5,7 +5,7 @@ import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "
 export function NotFoundPage() {
   return (
     <main className="flex min-h-svh items-center justify-center bg-background px-6">
-      <Empty className="max-w-[420px] rounded-[2rem] bg-card p-8">
+      <Empty className="max-w-[420px] rounded-[2rem] bg-card p-8 shadow-[0_24px_60px_rgba(35,40,50,0.08)]">
         <EmptyHeader>
           <EmptyTitle>페이지를 찾을 수 없습니다</EmptyTitle>
           <EmptyDescription>요청한 경로가 존재하지 않습니다.</EmptyDescription>
