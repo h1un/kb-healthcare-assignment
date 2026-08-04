@@ -1,7 +1,6 @@
 import { QueryClientProvider } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 import { AuthProvider } from "@/features/auth/AuthProvider";
-import { SessionExpiredDialog } from "@/features/session-expired/SessionExpiredDialog";
 import { queryClient } from "./query-client";
 
 type AppProvidersProps = {
@@ -11,10 +10,7 @@ type AppProvidersProps = {
 export function AppProviders({ children }: AppProvidersProps) {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        {children}
-        <SessionExpiredDialog />
-      </AuthProvider>
+      <AuthProvider>{children}</AuthProvider>
     </QueryClientProvider>
   );
 }

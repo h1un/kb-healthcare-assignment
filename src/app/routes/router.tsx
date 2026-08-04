@@ -1,5 +1,6 @@
 import { createRootRoute, createRoute, createRouter, Navigate, Outlet } from "@tanstack/react-router";
 import { useAuth } from "@/features/auth/AuthProvider";
+import { SessionExpiredDialog } from "@/features/session-expired/SessionExpiredDialog";
 import { DashboardPage } from "@/pages/dashboard/DashboardPage";
 import { MemberPage } from "@/pages/member/MemberPage";
 import { NotFoundPage } from "@/pages/not-found/NotFoundPage";
@@ -7,6 +8,15 @@ import { SignInPage } from "@/pages/sign-in/SignInPage";
 import { TaskDetailPage } from "@/pages/task-detail/TaskDetailPage";
 import { TaskListPage } from "@/pages/task-list/TaskListPage";
 import { AppLayout } from "@/widgets/app-layout/AppLayout";
+
+function RootShell() {
+  return (
+    <>
+      <Outlet />
+      <SessionExpiredDialog />
+    </>
+  );
+}
 
 function AppShell() {
   const { status, isAuthenticated } = useAuth();
@@ -31,7 +41,7 @@ function AppShell() {
 }
 
 const rootRoute = createRootRoute({
-  component: Outlet,
+  component: RootShell,
   notFoundComponent: NotFoundPage,
 });
 
