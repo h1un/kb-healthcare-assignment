@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { apiRequest } from "@/shared/api/http-client";
 import { clearSessionTokens, setSessionTokens } from "@/shared/api/token-store";
+import { userResponseSchema } from "@/shared/api/validators";
 
 describe("apiRequest", () => {
   beforeEach(() => {
@@ -61,6 +62,16 @@ describe("apiRequest", () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("not-json")));
 
     await expect(apiRequest("/api/user")).rejects.toMatchObject({
+      name: "ApiError",
+      status: 200,
+      errorMessage: "응답 형식이 올바르지 않습니다.",
+    });
+  });
+
+  it("normalizes runtime schema mismatches", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(Response.json({ name: "케어 매니저" })));
+
+    await expect(apiRequest("/api/user", { responseSchema: userResponseSchema })).rejects.toMatchObject({
       name: "ApiError",
       status: 200,
       errorMessage: "응답 형식이 올바르지 않습니다.",

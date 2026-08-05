@@ -1,13 +1,33 @@
 import { createRootRoute, createRoute, createRouter, Navigate, Outlet } from "@tanstack/react-router";
+import { lazy, Suspense, type ComponentType } from "react";
 import { useAuth } from "@/features/auth/AuthProvider";
 import { SessionExpiredDialog } from "@/features/session-expired/SessionExpiredDialog";
-import { DashboardPage } from "@/pages/dashboard/DashboardPage";
-import { MemberPage } from "@/pages/member/MemberPage";
 import { NotFoundPage } from "@/pages/not-found/NotFoundPage";
-import { SignInPage } from "@/pages/sign-in/SignInPage";
-import { TaskDetailPage } from "@/pages/task-detail/TaskDetailPage";
-import { TaskListPage } from "@/pages/task-list/TaskListPage";
 import { AppLayout } from "@/widgets/app-layout/AppLayout";
+
+const DashboardPage = lazy(() => import("@/pages/dashboard/DashboardPage").then((module) => ({ default: module.DashboardPage })));
+const MemberPage = lazy(() => import("@/pages/member/MemberPage").then((module) => ({ default: module.MemberPage })));
+const SignInPage = lazy(() => import("@/pages/sign-in/SignInPage").then((module) => ({ default: module.SignInPage })));
+const TaskDetailPage = lazy(() => import("@/pages/task-detail/TaskDetailPage").then((module) => ({ default: module.TaskDetailPage })));
+const TaskListPage = lazy(() => import("@/pages/task-list/TaskListPage").then((module) => ({ default: module.TaskListPage })));
+
+function RouteFallback() {
+  return (
+    <div className="flex min-h-[320px] items-center justify-center px-6 text-center text-sm font-bold text-muted-foreground">
+      화면을 불러오고 있어요.
+    </div>
+  );
+}
+
+function withSuspense(Component: ComponentType) {
+  return function SuspenseRoute() {
+    return (
+      <Suspense fallback={<RouteFallback />}>
+        <Component />
+      </Suspense>
+    );
+  };
+}
 
 function RootShell() {
   return (
@@ -68,31 +88,31 @@ const publicRoute = createRoute({
 const dashboardRoute = createRoute({
   getParentRoute: () => appRoute,
   path: "/",
-  component: DashboardPage,
+  component: withSuspense(DashboardPage),
 });
 
 const taskListRoute = createRoute({
   getParentRoute: () => appRoute,
   path: "/task",
-  component: TaskListPage,
+  component: withSuspense(TaskListPage),
 });
 
 const taskDetailRoute = createRoute({
   getParentRoute: () => appRoute,
   path: "/task/$taskId",
-  component: TaskDetailPage,
+  component: withSuspense(TaskDetailPage),
 });
 
 const memberRoute = createRoute({
   getParentRoute: () => appRoute,
   path: "/member",
-  component: MemberPage,
+  component: withSuspense(MemberPage),
 });
 
 const signInRoute = createRoute({
   getParentRoute: () => publicRoute,
   path: "/sign-in",
-  component: SignInPage,
+  component: withSuspense(SignInPage),
 });
 
 const routeTree = rootRoute.addChildren([

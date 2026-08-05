@@ -16,6 +16,7 @@ export const handlers = [
       return HttpResponse.json({ errorMessage: "이메일 또는 비밀번호가 올바르지 않습니다." }, { status: 400 });
     }
 
+    resetMockState();
     const tokens = issueTokens();
 
     return HttpResponse.json(tokens, {
@@ -116,6 +117,11 @@ export const handlers = [
     return HttpResponse.json({ success: true });
   }),
 ];
+
+export function resetMockState() {
+  deletedTaskIds.clear();
+  issuedRefreshTokens.clear();
+}
 
 function getActiveTasks() {
   return tasks.filter((task) => !deletedTaskIds.has(task.id));

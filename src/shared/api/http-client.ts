@@ -1,7 +1,10 @@
 import { clearSessionTokens, getAccessToken, setSessionTokens } from "./token-store";
 import type { AuthTokenResponse, ErrorResponse } from "./types";
+import { authTokenResponseSchema } from "./validators";
+import type { ZodType } from "zod";
 
-type ApiRequestOptions = RequestInit & {
+type ApiRequestOptions<T> = RequestInit & {
+  responseSchema?: ZodType<T>;
   skipAuthRefresh?: boolean;
 };
 
@@ -19,25 +22,25 @@ export class ApiError extends Error {
   }
 }
 
-export async function apiRequest<T>(path: string, options: ApiRequestOptions = {}): Promise<T> {
+export async function apiRequest<T>(path: string, options: ApiRequestOptions<T> = {}): Promise<T> {
   const response = await requestWithNetworkError(path, options);
 
   if (response.status === 401 && !options.skipAuthRefresh) {
     const refreshed = await refreshAccessToken();
 
     if (refreshed) {
-      return parseResponse<T>(await requestWithNetworkError(path, options));
+      return parseResponse<T>(await requestWithNetworkError(path, options), options.responseSchema);
     }
 
     clearSessionTokens();
     dispatchAuthExpired();
   }
 
-  return parseResponse<T>(response);
+  return parseResponse<T>(response, options.responseSchema);
 }
 
-async function fetchWithAuth(path: string, options: ApiRequestOptions) {
-  const { skipAuthRefresh: _skipAuthRefresh, ...fetchOptions } = options;
+async function fetchWithAuth<T>(path: string, options: ApiRequestOptions<T>) {
+  const { responseSchema: _responseSchema, skipAuthRefresh: _skipAuthRefresh, ...fetchOptions } = options;
   const headers = new Headers(options.headers);
   const token = getAccessToken();
 
@@ -68,6 +71,7 @@ async function requestRefreshAccessToken() {
   try {
     const tokens = await apiRequest<AuthTokenResponse>("/api/refresh", {
       method: "POST",
+      responseSchema: authTokenResponseSchema,
       skipAuthRefresh: true,
     });
     setSessionTokens(tokens);
@@ -77,7 +81,7 @@ async function requestRefreshAccessToken() {
   }
 }
 
-async function requestWithNetworkError(path: string, options: ApiRequestOptions) {
+async function requestWithNetworkError<T>(path: string, options: ApiRequestOptions<T>) {
   try {
     return await fetchWithAuth(path, options);
   } catch (error) {
@@ -89,7 +93,7 @@ async function requestWithNetworkError(path: string, options: ApiRequestOptions)
   }
 }
 
-async function parseResponse<T>(response: Response): Promise<T> {
+async function parseResponse<T>(response: Response, responseSchema?: ZodType<T>): Promise<T> {
   const text = await response.text();
   let data: unknown;
 
@@ -104,7 +108,17 @@ async function parseResponse<T>(response: Response): Promise<T> {
     throw new ApiError(response.status, error?.errorMessage ?? "요청을 처리하지 못했습니다.");
   }
 
-  return data as T;
+  if (!responseSchema) {
+    return data as T;
+  }
+
+  const parsed = responseSchema.safeParse(data);
+
+  if (!parsed.success) {
+    throw new ApiError(response.status, "응답 형식이 올바르지 않습니다.");
+  }
+
+  return parsed.data;
 }
 
 function isErrorResponse(value: unknown): value is Partial<ErrorResponse> {
