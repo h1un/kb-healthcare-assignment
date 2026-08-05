@@ -12,7 +12,9 @@ import { AppLayout } from "@/widgets/app-layout/AppLayout";
 function RootShell() {
   return (
     <>
-      <Outlet />
+      <AppLayout>
+        <Outlet />
+      </AppLayout>
       <SessionExpiredDialog />
     </>
   );
@@ -33,11 +35,7 @@ function AppShell() {
     return <Navigate to="/sign-in" replace />;
   }
 
-  return (
-    <AppLayout>
-      <Outlet />
-    </AppLayout>
-  );
+  return <Outlet />;
 }
 
 const rootRoute = createRootRoute({

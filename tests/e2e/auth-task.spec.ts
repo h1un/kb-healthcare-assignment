@@ -57,6 +57,9 @@ test("비로그인 사용자는 보호 라우트에서 로그인 화면으로 �
   await page.goto("/task");
 
   await expect(page).toHaveURL(/\/sign-in$/);
+  await expect(page.getByRole("link", { name: "로그인" })).toBeVisible();
+  await expect(page.getByRole("navigation").getByRole("link", { name: "대시보드" })).toBeVisible();
+  await expect(page.getByRole("navigation").getByRole("link", { name: "할 일" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "케어 태스크를 시작해요" })).toBeVisible();
 });
 

@@ -52,7 +52,7 @@ export function SignInPage() {
   const closeErrorDialog = () => setErrorMessage(null);
 
   return (
-    <main className="flex min-h-svh items-center justify-center bg-background px-6 py-10">
+    <section className="flex min-h-[calc(100svh-12rem)] items-center justify-center py-2">
       <section className="w-full max-w-[420px] rounded-[2rem] bg-card p-8 shadow-[0_24px_60px_rgba(35,40,50,0.08)]">
         <img src="/logo_text.svg" alt="KB O'CARE" className="h-8 w-auto" />
         <h1 className="mt-9 text-3xl font-black leading-tight text-kb-ink">케어 태스크를 시작해요</h1>
@@ -113,6 +113,6 @@ export function SignInPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </main>
+    </section>
   );
 }

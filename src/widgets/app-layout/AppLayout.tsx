@@ -17,7 +17,13 @@ const navItems = [
 export function AppLayout({ children }: AppLayoutProps) {
   const { isAuthenticated } = useAuth();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
-  const pageTitle = pathname.startsWith("/task") ? "할 일" : pathname.startsWith("/member") ? "회원정보" : "대시보드";
+  const pageTitle = pathname.startsWith("/task")
+    ? "할 일"
+    : pathname.startsWith("/member")
+      ? "회원정보"
+      : pathname.startsWith("/sign-in")
+        ? "로그인"
+        : "대시보드";
   const authLink = isAuthenticated ? "/member" : "/sign-in";
   const AuthIcon = isAuthenticated ? UserRoundIcon : LogInIcon;
 
