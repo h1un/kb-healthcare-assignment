@@ -3,6 +3,12 @@
 KB헬스케어 프론트엔드 과제 제출용 React SPA입니다.  
 제공된 [requirement.md](./docs/requirement.md)와 [openapi.yaml](./docs/openapi.yaml)을 기준으로 로그인, 대시보드, 할 일 목록/상세, 회원정보 화면을 구현했습니다.
 
+## 테스트 계정
+
+```text
+care@kbhealth.com / Password1
+```
+
 ## JD 반영 방향
 
 과제 범위에서 검증 가능한 JD 우대사항을 중심으로 반영했습니다.
@@ -122,12 +128,6 @@ npm run dev
 npm run preview:mock
 ```
 
-테스트 계정:
-
-```text
-care@kbhealth.com / Password1
-```
-
 ## 검증 방법
 
 ```bash
@@ -146,6 +146,3 @@ npm run build
 - 서버 로그아웃: 현재는 브라우저에 저장된 토큰을 삭제하는 클라이언트 로그아웃으로 처리했으며, 로그아웃 API가 제공되면 refresh token 무효화까지 확장할 수 있습니다.
 - 상태별 서버 필터: `/api/task`에 상태 필터 파라미터가 추가되면 `전체/해야할 일/한 일` 필터를 서버 페이지네이션과 함께 처리할 수 있습니다.
 
-## AI 활용
-
-AI 활용 범위는 [AI_USAGE.md](./AI_USAGE.md)에 정리했습니다.
