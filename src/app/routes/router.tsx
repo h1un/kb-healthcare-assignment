@@ -12,9 +12,7 @@ import { AppLayout } from "@/widgets/app-layout/AppLayout";
 function RootShell() {
   return (
     <>
-      <AppLayout>
-        <Outlet />
-      </AppLayout>
+      <Outlet />
       <SessionExpiredDialog />
     </>
   );
@@ -35,7 +33,19 @@ function AppShell() {
     return <Navigate to="/sign-in" replace />;
   }
 
-  return <Outlet />;
+  return (
+    <AppLayout>
+      <Outlet />
+    </AppLayout>
+  );
+}
+
+function PublicShell() {
+  return (
+    <AppLayout>
+      <Outlet />
+    </AppLayout>
+  );
 }
 
 const rootRoute = createRootRoute({
@@ -47,6 +57,12 @@ const appRoute = createRoute({
   getParentRoute: () => rootRoute,
   id: "app",
   component: AppShell,
+});
+
+const publicRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  id: "public",
+  component: PublicShell,
 });
 
 const dashboardRoute = createRoute({
@@ -74,13 +90,13 @@ const memberRoute = createRoute({
 });
 
 const signInRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => publicRoute,
   path: "/sign-in",
   component: SignInPage,
 });
 
 const routeTree = rootRoute.addChildren([
-  signInRoute,
+  publicRoute.addChildren([signInRoute]),
   appRoute.addChildren([dashboardRoute, taskListRoute, taskDetailRoute, memberRoute]),
 ]);
 

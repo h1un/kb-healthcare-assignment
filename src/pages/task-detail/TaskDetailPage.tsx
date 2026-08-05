@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "@tanstack/react-router";
-import { CalendarDaysIcon, RefreshCwIcon } from "lucide-react";
+import { ArrowLeftIcon, CalendarDaysIcon, ListChecksIcon, RefreshCwIcon } from "lucide-react";
 import { getTaskDetail } from "@/entities/task/api";
 import { DeleteTaskDialog } from "@/features/delete-task/DeleteTaskDialog";
 import { ApiError } from "@/shared/api/http-client";
@@ -27,23 +27,28 @@ export function TaskDetailPage() {
 
   return (
     <section className="flex flex-col gap-5">
-      <Link to="/task" className="text-sm font-black text-muted-foreground">
-        할 일 목록으로 돌아가기
-      </Link>
+      {!isNotFound && (
+        <Button className="-ml-2 w-fit rounded-full px-3 text-sm font-black text-muted-foreground" variant="ghost" asChild>
+          <Link to="/task">
+            <ArrowLeftIcon data-icon="inline-start" aria-hidden="true" />
+            할 일 목록으로 돌아가기
+          </Link>
+        </Button>
+      )}
 
       {isLoading && <TaskDetailSkeleton />}
 
       {isNotFound && (
-        <Empty className="min-h-[440px] rounded-[2rem] bg-card">
+        <Empty className="min-h-[460px] rounded-[2rem] bg-card px-8 py-10 shadow-[0_16px_40px_rgba(35,40,50,0.06)]">
           <EmptyHeader>
-            <EmptyMedia variant="icon">
-              <RefreshCwIcon aria-hidden="true" />
+            <EmptyMedia className="mb-3 size-16 rounded-[1.75rem] bg-kb-yellow-soft text-kb-ink" variant="icon">
+              <ListChecksIcon className="size-8" aria-hidden="true" />
             </EmptyMedia>
-            <EmptyTitle>할 일을 찾을 수 없어요</EmptyTitle>
-            <EmptyDescription>이미 삭제됐거나 존재하지 않는 할 일입니다.</EmptyDescription>
+            <EmptyTitle className="text-2xl font-black text-kb-ink">할 일을 찾을 수 없어요</EmptyTitle>
+            <EmptyDescription className="font-bold">이미 삭제됐거나 존재하지 않는 할 일입니다.</EmptyDescription>
           </EmptyHeader>
-          <EmptyContent>
-            <Button asChild>
+          <EmptyContent className="max-w-[280px]">
+            <Button className="h-12 w-full rounded-2xl bg-kb-yellow text-base font-black text-kb-ink hover:bg-kb-yellow/90" asChild>
               <Link to="/task">목록으로 이동</Link>
             </Button>
           </EmptyContent>

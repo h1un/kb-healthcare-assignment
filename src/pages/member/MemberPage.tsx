@@ -1,11 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
-import { UserRoundIcon } from "lucide-react";
+import { LogOutIcon, UserRoundIcon } from "lucide-react";
 import { getUser } from "@/entities/user/api";
+import { useAuth } from "@/features/auth/AuthProvider";
 import { Button } from "@/shared/ui/button";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/shared/ui/empty";
 import { Skeleton } from "@/shared/ui/skeleton";
 
 export function MemberPage() {
+  const { logout } = useAuth();
   const { data, isError, isLoading, refetch } = useQuery({
     queryKey: ["user"],
     queryFn: getUser,
@@ -42,15 +44,21 @@ export function MemberPage() {
   }
 
   return (
-    <section className="grid grid-cols-[auto_1fr] items-center gap-6 rounded-[2rem] bg-card p-7 shadow-[0_16px_40px_rgba(35,40,50,0.06)]">
-      <div className="grid size-24 place-items-center rounded-[2rem] bg-kb-yellow text-kb-ink">
-        <UserRoundIcon className="size-11" aria-hidden="true" />
+    <section className="rounded-[2rem] bg-card p-7 shadow-[0_16px_40px_rgba(35,40,50,0.06)]">
+      <div className="grid grid-cols-[auto_1fr] items-center gap-6">
+        <div className="grid size-24 place-items-center rounded-[2rem] bg-kb-yellow text-kb-ink">
+          <UserRoundIcon className="size-11" aria-hidden="true" />
+        </div>
+        <div>
+          <p className="text-sm font-black text-muted-foreground">Member</p>
+          <h2 className="mt-3 text-2xl font-black text-kb-ink">{data.name}</h2>
+          <p className="mt-3 text-sm font-bold leading-relaxed text-muted-foreground">{data.memo}</p>
+        </div>
       </div>
-      <div>
-        <p className="text-sm font-black text-muted-foreground">Member</p>
-        <h2 className="mt-3 text-2xl font-black text-kb-ink">{data.name}</h2>
-        <p className="mt-3 text-sm font-bold leading-relaxed text-muted-foreground">{data.memo}</p>
-      </div>
+      <Button className="mt-7 h-12 w-full rounded-2xl text-base font-black" type="button" variant="outline" onClick={logout}>
+        <LogOutIcon data-icon="inline-start" aria-hidden="true" />
+        로그아웃
+      </Button>
     </section>
   );
 }

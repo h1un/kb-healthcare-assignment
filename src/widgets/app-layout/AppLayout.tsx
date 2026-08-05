@@ -24,6 +24,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       : pathname.startsWith("/sign-in")
         ? "로그인"
         : "대시보드";
+  const shouldShowRouteNav = !pathname.startsWith("/sign-in");
   const authLink = isAuthenticated ? "/member" : "/sign-in";
   const AuthIcon = isAuthenticated ? UserRoundIcon : LogInIcon;
 
@@ -44,30 +45,32 @@ export function AppLayout({ children }: AppLayoutProps) {
           </div>
         </header>
 
-        <main className="flex-1 px-7 py-7 pb-28">{children}</main>
+        <main className={cn("flex-1 px-7 py-7", shouldShowRouteNav ? "pb-28" : "pb-7")}>{children}</main>
 
-        <nav className="fixed inset-x-0 bottom-0 z-30 mx-auto w-full max-w-[720px] border-t border-border bg-card/95 px-8 py-3 backdrop-blur">
-          <div className="grid grid-cols-2 gap-2">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
+        {shouldShowRouteNav ? (
+          <nav className="fixed inset-x-0 bottom-0 z-30 mx-auto w-full max-w-[720px] border-t border-border bg-card/95 px-8 py-3 backdrop-blur">
+            <div className="grid grid-cols-2 gap-2">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
 
-              return (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  className={cn(
-                    "flex flex-col items-center justify-center gap-1 rounded-2xl px-3 py-2 text-sm font-extrabold text-muted-foreground transition",
-                    isActive && "text-kb-ink",
-                  )}
-                >
-                  <Icon className={cn("size-6", isActive && "fill-kb-yellow text-kb-yellow")} aria-hidden="true" />
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
-          </div>
-        </nav>
+                return (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    className={cn(
+                      "flex flex-col items-center justify-center gap-1 rounded-2xl px-3 py-2 text-sm font-extrabold text-muted-foreground transition",
+                      isActive && "text-kb-ink",
+                    )}
+                  >
+                    <Icon className={cn("size-6", isActive && "fill-kb-yellow text-kb-yellow")} aria-hidden="true" />
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </nav>
+        ) : null}
       </div>
     </div>
   );
