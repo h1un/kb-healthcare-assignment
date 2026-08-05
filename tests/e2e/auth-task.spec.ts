@@ -58,8 +58,7 @@ test("비로그인 사용자는 보호 라우트에서 로그인 화면으로 �
 
   await expect(page).toHaveURL(/\/sign-in$/);
   await expect(page.getByRole("link", { name: "로그인" })).toBeVisible();
-  await expect(page.getByRole("navigation").getByRole("link", { name: "대시보드" })).toBeVisible();
-  await expect(page.getByRole("navigation").getByRole("link", { name: "할 일" })).toBeVisible();
+  await expect(page.getByRole("navigation")).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "케어 태스크를 시작해요" })).toBeVisible();
 });
 
@@ -79,4 +78,10 @@ test("회원정보 화면은 사용자 이름과 메모를 표시한다", async 
   await expect(page).toHaveURL(/\/member$/);
   await expect(page.getByText("케어 매니저")).toBeVisible();
   await expect(page.getByText("KB헬스케어 케어 태스크 운영 담당자")).toBeVisible();
+  await page.getByRole("button", { name: "로그아웃" }).click();
+
+  await expect(page).toHaveURL(/\/sign-in$/);
+  await expect(page.getByRole("link", { name: "로그인" })).toBeVisible();
+  await expect(page.getByRole("navigation")).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "케어 태스크를 시작해요" })).toBeVisible();
 });
