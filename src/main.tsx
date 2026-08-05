@@ -5,7 +5,9 @@ import { App } from "@/app/App";
 import "./index.css";
 
 async function enableMocking() {
-  if (!import.meta.env.DEV) {
+  const shouldEnableMocking = import.meta.env.DEV || import.meta.env.VITE_ENABLE_MSW === "true";
+
+  if (!shouldEnableMocking) {
     return;
   }
 

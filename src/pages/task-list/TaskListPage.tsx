@@ -117,6 +117,7 @@ function TaskCard({ task }: { task: TaskItem }) {
     <Link
       to="/task/$taskId"
       params={{ taskId: task.id }}
+      aria-label={`${task.id} ${task.title} 상세 보기`}
       className="flex h-[116px] items-center gap-5 rounded-[2rem] bg-card p-6 shadow-[0_16px_40px_rgba(35,40,50,0.06)]"
     >
       <span

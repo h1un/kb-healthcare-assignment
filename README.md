@@ -116,6 +116,12 @@ npm run dev
 
 개발 서버 기본 주소는 `http://localhost:5173`입니다.
 
+빌드 결과를 mock API와 함께 확인하려면 다음 명령을 사용합니다.
+
+```bash
+npm run preview:mock
+```
+
 테스트 계정:
 
 ```text

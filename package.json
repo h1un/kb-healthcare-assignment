@@ -6,8 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:mock": "VITE_ENABLE_MSW=true vite build",
     "lint": "oxlint",
     "preview": "vite preview",
+    "preview:mock": "npm run build:mock && vite preview",
     "generate:api": "openapi-typescript docs/openapi.yaml -o src/shared/api/schema.ts",
     "test": "vitest run",
     "test:watch": "vitest",

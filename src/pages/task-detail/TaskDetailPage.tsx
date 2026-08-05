@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useParams } from "@tanstack/react-router";
 import { CalendarDaysIcon, RefreshCwIcon } from "lucide-react";
 import { getTaskDetail } from "@/entities/task/api";
 import { DeleteTaskDialog } from "@/features/delete-task/DeleteTaskDialog";
@@ -10,7 +10,7 @@ import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTi
 import { Skeleton } from "@/shared/ui/skeleton";
 
 export function TaskDetailPage() {
-  const taskId = useRouterState({ select: (state) => state.location.pathname.split("/").at(-1) ?? "" });
+  const { taskId } = useParams({ from: "/app/task/$taskId" });
   const { data, error, isError, isLoading, refetch } = useQuery({
     queryKey: ["task", taskId],
     queryFn: () => getTaskDetail(taskId),

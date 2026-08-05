@@ -24,13 +24,8 @@ export const handlers = [
     });
   }),
 
-  http.post("/api/refresh", async ({ request }) => {
+  http.post("/api/refresh", async () => {
     await delay(120);
-    const cookie = request.headers.get("cookie") ?? "";
-
-    if (!cookie.includes("token=refresh-")) {
-      return HttpResponse.json({ errorMessage: "refresh token이 유효하지 않습니다." }, { status: 401 });
-    }
 
     return HttpResponse.json(createTokens());
   }),
