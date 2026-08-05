@@ -20,6 +20,7 @@ export function TaskListPage() {
     getNextPageParam: (lastPage, pages) => (lastPage.hasNext ? pages.length + 1 : undefined),
   });
   const tasks = data?.pages.flatMap((page) => page.data) ?? [];
+  const hasLoadedTasks = tasks.length > 0;
   const rowCount = hasNextPage ? tasks.length + 1 : tasks.length;
   const rowVirtualizer = useWindowVirtualizer({
     count: rowCount,
@@ -31,14 +32,14 @@ export function TaskListPage() {
   const lastVirtualIndex = virtualItems.at(-1)?.index;
 
   useEffect(() => {
-    if (lastVirtualIndex === undefined || !hasNextPage || isFetchingNextPage) {
+    if (lastVirtualIndex === undefined || !hasNextPage || isError || isFetchingNextPage) {
       return;
     }
 
     if (lastVirtualIndex >= tasks.length - 1) {
       void fetchNextPage();
     }
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage, lastVirtualIndex, tasks.length]);
+  }, [fetchNextPage, hasNextPage, isError, isFetchingNextPage, lastVirtualIndex, tasks.length]);
 
   if (isLoading) {
     return (
@@ -51,7 +52,7 @@ export function TaskListPage() {
     );
   }
 
-  if (isError) {
+  if (isError && !hasLoadedTasks) {
     return (
       <Empty className="min-h-[520px] rounded-[2rem] bg-card">
         <EmptyHeader>
@@ -100,7 +101,11 @@ export function TaskListPage() {
                 transform: `translateY(${virtualItem.start - rowVirtualizer.options.scrollMargin}px)`,
               }}
             >
-              {task ? <TaskCard task={task} /> : <Skeleton className="h-[116px] rounded-[2rem]" />}
+              {task ? (
+                <TaskCard task={task} />
+              ) : (
+                <LoadMoreRow hasError={isError} onRetry={() => void fetchNextPage()} />
+              )}
             </div>
           );
         })}
@@ -108,6 +113,21 @@ export function TaskListPage() {
       {isFetchingNextPage && <p className="py-4 text-center text-sm font-bold text-muted-foreground">더 불러오는 중...</p>}
     </section>
   );
+}
+
+function LoadMoreRow({ hasError, onRetry }: { hasError: boolean; onRetry: () => void }) {
+  if (hasError) {
+    return (
+      <div className="flex h-[116px] items-center justify-center gap-3 rounded-[2rem] bg-card text-sm font-bold text-muted-foreground">
+        다음 페이지를 불러오지 못했어요.
+        <Button type="button" variant="outline" onClick={onRetry}>
+          다시 불러오기
+        </Button>
+      </div>
+    );
+  }
+
+  return <Skeleton className="h-[116px] rounded-[2rem]" />;
 }
 
 function TaskCard({ task }: { task: TaskItem }) {

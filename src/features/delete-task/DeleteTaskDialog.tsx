@@ -31,8 +31,11 @@ export function DeleteTaskDialog({ taskId }: DeleteTaskDialogProps) {
   const deleteMutation = useMutation({
     mutationFn: () => deleteTask(taskId),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+      queryClient.removeQueries({ queryKey: ["task", taskId], exact: true });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["tasks"] }),
+        queryClient.invalidateQueries({ queryKey: ["dashboard"] }),
+      ]);
       setOpen(false);
       await navigate({ to: "/task" });
     },
@@ -45,6 +48,7 @@ export function DeleteTaskDialog({ taskId }: DeleteTaskDialogProps) {
     if (!open) {
       setConfirmValue("");
       setErrorMessage(null);
+      deleteMutation.reset();
     }
   }, [open]);
   const handleDelete = () => {

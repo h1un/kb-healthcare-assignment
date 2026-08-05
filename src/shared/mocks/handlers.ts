@@ -5,6 +5,7 @@ import type { SignInRequest } from "@/shared/api/types";
 const TEST_EMAIL = "care@kbhealth.com";
 const TEST_PASSWORD = "Password1";
 const deletedTaskIds = new Set<string>();
+const issuedRefreshTokens = new Set<string>();
 
 export const handlers = [
   http.post("/api/sign-in", async ({ request }) => {
@@ -15,7 +16,7 @@ export const handlers = [
       return HttpResponse.json({ errorMessage: "이메일 또는 비밀번호가 올바르지 않습니다." }, { status: 400 });
     }
 
-    const tokens = createTokens();
+    const tokens = issueTokens();
 
     return HttpResponse.json(tokens, {
       headers: {
@@ -24,10 +25,16 @@ export const handlers = [
     });
   }),
 
-  http.post("/api/refresh", async () => {
+  http.post("/api/refresh", async ({ request }) => {
     await delay(120);
 
-    return HttpResponse.json(createTokens());
+    const refreshToken = getRefreshTokenFromCookie(request);
+
+    if (refreshToken && !issuedRefreshTokens.has(refreshToken)) {
+      return unauthorized();
+    }
+
+    return HttpResponse.json(issueTokens());
   }),
 
   http.get("/api/user", async ({ request }) => {
@@ -122,11 +129,24 @@ function unauthorized() {
   return HttpResponse.json({ errorMessage: "인증 정보가 유효하지 않습니다." }, { status: 401 });
 }
 
-function createTokens() {
+function getRefreshTokenFromCookie(request: Request) {
+  const cookie = request.headers.get("cookie") ?? "";
+  const tokenCookie = cookie
+    .split(";")
+    .map((part) => part.trim())
+    .find((part) => part.startsWith("token="));
+
+  return tokenCookie?.slice("token=".length);
+}
+
+function issueTokens() {
   const nonce = crypto.randomUUID();
+  const refreshToken = `refresh-${nonce}`;
+
+  issuedRefreshTokens.add(refreshToken);
 
   return {
     accessToken: `access-${nonce}`,
-    refreshToken: `refresh-${nonce}`,
+    refreshToken,
   };
 }
