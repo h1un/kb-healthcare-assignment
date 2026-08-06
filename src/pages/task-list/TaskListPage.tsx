@@ -138,11 +138,11 @@ function TaskCard({ task }: { task: TaskItem }) {
       to="/task/$taskId"
       params={{ taskId: task.id }}
       aria-label={`${task.id} ${task.title} 상세 보기`}
-      className="flex h-[116px] items-center gap-5 rounded-[2rem] bg-card p-6 shadow-[0_16px_40px_rgba(35,40,50,0.06)]"
+      className="flex h-[116px] items-center gap-3 rounded-[2rem] bg-card p-4 shadow-[0_16px_40px_rgba(35,40,50,0.06)] min-[360px]:gap-5 min-[360px]:p-6"
     >
       <span
         className={cn(
-          "grid size-12 shrink-0 place-items-center rounded-full",
+          "grid size-11 shrink-0 place-items-center rounded-full min-[360px]:size-12",
           isDone ? "bg-kb-blue/15 text-kb-blue" : "bg-kb-pink text-destructive",
         )}
       >
@@ -150,10 +150,10 @@ function TaskCard({ task }: { task: TaskItem }) {
       </span>
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
-          <h2 className="truncate text-xl font-black text-kb-ink">{task.title}</h2>
+          <h2 className="truncate text-lg font-black text-kb-ink min-[360px]:text-xl">{task.title}</h2>
           <Badge variant={isDone ? "secondary" : "destructive"}>{isDone ? "완료" : "해야 할 일"}</Badge>
         </div>
-        <p className="mt-2 truncate text-base font-bold text-muted-foreground">{task.memo}</p>
+        <p className="mt-2 truncate text-sm font-bold text-muted-foreground min-[360px]:text-base">{task.memo}</p>
       </div>
       <ChevronRightIcon className="size-6 shrink-0 text-muted-foreground" aria-hidden="true" />
     </Link>

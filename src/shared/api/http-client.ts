@@ -29,11 +29,16 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions<T> 
     const refreshed = await refreshAccessToken();
 
     if (refreshed) {
-      return parseResponse<T>(await requestWithNetworkError(path, options), options.responseSchema);
+      const retryResponse = await requestWithNetworkError(path, options);
+
+      if (retryResponse.status === 401) {
+        expireSession();
+      }
+
+      return parseResponse<T>(retryResponse, options.responseSchema);
     }
 
-    clearSessionTokens();
-    dispatchAuthExpired();
+    expireSession();
   }
 
   return parseResponse<T>(response, options.responseSchema);
@@ -131,4 +136,9 @@ function dispatchAuthExpired() {
   }
 
   window.dispatchEvent(new CustomEvent("auth:expired"));
+}
+
+function expireSession() {
+  clearSessionTokens();
+  dispatchAuthExpired();
 }

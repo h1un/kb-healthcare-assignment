@@ -4,8 +4,9 @@ import type { SignInRequest } from "@/shared/api/types";
 
 const TEST_EMAIL = "care@kbhealth.com";
 const TEST_PASSWORD = "Password1";
+const MOCK_ACCESS_TOKEN = "mock-access-token";
+const MOCK_REFRESH_TOKEN = "mock-refresh-token";
 const deletedTaskIds = new Set<string>();
-const issuedRefreshTokens = new Set<string>();
 
 export const handlers = [
   http.post("/api/sign-in", async ({ request }) => {
@@ -26,16 +27,22 @@ export const handlers = [
     });
   }),
 
-  http.post("/api/refresh", async ({ request }) => {
+  http.post("/api/refresh", async ({ cookies }) => {
     await delay(120);
 
-    const refreshToken = getRefreshTokenFromCookie(request);
+    const refreshToken = cookies.token;
 
-    if (refreshToken && !issuedRefreshTokens.has(refreshToken)) {
+    if (refreshToken !== MOCK_REFRESH_TOKEN) {
       return unauthorized();
     }
 
-    return HttpResponse.json(issueTokens());
+    const tokens = issueTokens();
+
+    return HttpResponse.json(tokens, {
+      headers: {
+        "Set-Cookie": `token=${tokens.refreshToken}; Path=/; SameSite=Lax`,
+      },
+    });
   }),
 
   http.get("/api/user", async ({ request }) => {
@@ -120,7 +127,6 @@ export const handlers = [
 
 export function resetMockState() {
   deletedTaskIds.clear();
-  issuedRefreshTokens.clear();
 }
 
 function getActiveTasks() {
@@ -128,31 +134,16 @@ function getActiveTasks() {
 }
 
 function isAuthorized(request: Request) {
-  return request.headers.get("authorization")?.startsWith("Bearer access-") ?? false;
+  return request.headers.get("authorization") === `Bearer ${MOCK_ACCESS_TOKEN}`;
 }
 
 function unauthorized() {
   return HttpResponse.json({ errorMessage: "인증 정보가 유효하지 않습니다." }, { status: 401 });
 }
 
-function getRefreshTokenFromCookie(request: Request) {
-  const cookie = request.headers.get("cookie") ?? "";
-  const tokenCookie = cookie
-    .split(";")
-    .map((part) => part.trim())
-    .find((part) => part.startsWith("token="));
-
-  return tokenCookie?.slice("token=".length);
-}
-
 function issueTokens() {
-  const nonce = crypto.randomUUID();
-  const refreshToken = `refresh-${nonce}`;
-
-  issuedRefreshTokens.add(refreshToken);
-
   return {
-    accessToken: `access-${nonce}`,
-    refreshToken,
+    accessToken: MOCK_ACCESS_TOKEN,
+    refreshToken: MOCK_REFRESH_TOKEN,
   };
 }

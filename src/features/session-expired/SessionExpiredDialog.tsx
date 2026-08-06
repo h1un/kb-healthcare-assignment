@@ -32,7 +32,7 @@ export function SessionExpiredDialog() {
       >
         <AlertDialogHeader>
           <AlertDialogTitle>로그인이 만료됐어요.</AlertDialogTitle>
-          <AlertDialogDescription>다시 로그인하면 진행 중이던 화면으로 돌아올 수 있습니다.</AlertDialogDescription>
+          <AlertDialogDescription>로그인 상태가 만료되었습니다. 다시 로그인해주세요.</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>취소</AlertDialogCancel>

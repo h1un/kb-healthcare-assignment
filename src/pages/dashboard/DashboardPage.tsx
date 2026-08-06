@@ -46,12 +46,15 @@ export function DashboardPage() {
         </div>
       </Link>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-3 min-[360px]:grid-cols-3 min-[360px]:gap-4">
         {stats.map((stat) => {
           const Icon = stat.icon;
 
           return (
-            <Card key={stat.label} className="rounded-[1.75rem] border-0 px-1 py-5 shadow-[0_16px_40px_rgba(35,40,50,0.06)]">
+            <Card
+              key={stat.label}
+              className="rounded-[1.75rem] border-0 px-1 py-5 shadow-[0_16px_40px_rgba(35,40,50,0.06)]"
+            >
               <CardHeader className="px-5">
                 <div className={cn("grid size-11 place-items-center rounded-full", stat.iconClassName)}>
                   <Icon className="size-5" aria-hidden="true" />
@@ -59,8 +62,8 @@ export function DashboardPage() {
               </CardHeader>
               <CardContent className="px-5">
                 {isLoading ? <Skeleton className="h-10 w-16 rounded-xl" /> : <p className="text-3xl font-black text-kb-ink">{stat.value}</p>}
-                <CardTitle className="mt-2 text-base font-black">{stat.label}</CardTitle>
-                <CardDescription className="mt-1 text-sm font-bold">{stat.description}</CardDescription>
+                <CardTitle className="mt-2 break-keep text-base font-black">{stat.label}</CardTitle>
+                <CardDescription className="mt-1 break-keep text-sm font-bold">{stat.description}</CardDescription>
               </CardContent>
             </Card>
           );

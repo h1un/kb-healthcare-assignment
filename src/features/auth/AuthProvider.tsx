@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { refreshSession, signIn, signOut } from "@/entities/auth/api";
 import { hasRefreshTokenCookie } from "@/shared/api/token-store";
@@ -21,6 +22,7 @@ type AuthProviderProps = {
 };
 
 export function AuthProvider({ children }: AuthProviderProps) {
+  const queryClient = useQueryClient();
   const [status, setStatus] = useState<AuthStatus>("checking");
   const [sessionExpired, setSessionExpired] = useState(false);
 
@@ -53,25 +55,28 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     const handleExpired = () => {
       signOut();
+      queryClient.clear();
       setStatus("anonymous");
       setSessionExpired(true);
     };
 
     window.addEventListener("auth:expired", handleExpired);
     return () => window.removeEventListener("auth:expired", handleExpired);
-  }, []);
+  }, [queryClient]);
 
   const login = useCallback(async (payload: SignInRequest) => {
     await signIn(payload);
+    queryClient.clear();
     setSessionExpired(false);
     setStatus("authenticated");
-  }, []);
+  }, [queryClient]);
 
   const logout = useCallback(() => {
     signOut();
+    queryClient.clear();
     setSessionExpired(false);
     setStatus("anonymous");
-  }, []);
+  }, [queryClient]);
 
   const value = useMemo<AuthContextValue>(
     () => ({
