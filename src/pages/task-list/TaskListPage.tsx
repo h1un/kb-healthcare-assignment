@@ -11,7 +11,7 @@ import { Button } from "@/shared/ui/button";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/shared/ui/empty";
 import { Skeleton } from "@/shared/ui/skeleton";
 
-export function TaskListPage() {
+export default function TaskListPage() {
   const listRef = useRef<HTMLDivElement | null>(null);
   const { data, fetchNextPage, hasNextPage, isError, isFetchingNextPage, isLoading, refetch } = useInfiniteQuery({
     queryKey: ["tasks"],

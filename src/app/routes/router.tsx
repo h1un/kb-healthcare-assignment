@@ -5,11 +5,11 @@ import { SessionExpiredDialog } from "@/features/session-expired/SessionExpiredD
 import { NotFoundPage } from "@/pages/not-found/NotFoundPage";
 import { AppLayout } from "@/widgets/app-layout/AppLayout";
 
-const DashboardPage = lazy(() => import("@/pages/dashboard/DashboardPage").then((module) => ({ default: module.DashboardPage })));
-const MemberPage = lazy(() => import("@/pages/member/MemberPage").then((module) => ({ default: module.MemberPage })));
-const SignInPage = lazy(() => import("@/pages/sign-in/SignInPage").then((module) => ({ default: module.SignInPage })));
-const TaskDetailPage = lazy(() => import("@/pages/task-detail/TaskDetailPage").then((module) => ({ default: module.TaskDetailPage })));
-const TaskListPage = lazy(() => import("@/pages/task-list/TaskListPage").then((module) => ({ default: module.TaskListPage })));
+const DashboardPage = lazy(() => import("@/pages/dashboard/DashboardPage"));
+const MemberPage = lazy(() => import("@/pages/member/MemberPage"));
+const SignInPage = lazy(() => import("@/pages/sign-in/SignInPage"));
+const TaskDetailPage = lazy(() => import("@/pages/task-detail/TaskDetailPage"));
+const TaskListPage = lazy(() => import("@/pages/task-list/TaskListPage"));
 
 function RouteFallback() {
   return (

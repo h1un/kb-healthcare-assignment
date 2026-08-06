@@ -6,7 +6,7 @@ import { Button } from "@/shared/ui/button";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/shared/ui/empty";
 import { Skeleton } from "@/shared/ui/skeleton";
 
-export function MemberPage() {
+export default function MemberPage() {
   const { logout } = useAuth();
   const { data, isError, isLoading, refetch } = useQuery({
     queryKey: ["user"],

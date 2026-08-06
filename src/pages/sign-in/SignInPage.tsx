@@ -18,7 +18,7 @@ import {
   AlertDialogTitle,
 } from "@/shared/ui/alert-dialog";
 
-export function SignInPage() {
+export default function SignInPage() {
   const navigate = useNavigate();
   const { status, login } = useAuth();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);

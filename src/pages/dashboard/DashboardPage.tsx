@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/sha
 import { cn } from "@/shared/lib/utils";
 import { Skeleton } from "@/shared/ui/skeleton";
 
-export function DashboardPage() {
+export default function DashboardPage() {
   const { data, isError, isLoading } = useQuery({
     queryKey: ["dashboard"],
     queryFn: getDashboard,

@@ -9,7 +9,7 @@ import { Button } from "@/shared/ui/button";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/shared/ui/empty";
 import { Skeleton } from "@/shared/ui/skeleton";
 
-export function TaskDetailPage() {
+export default function TaskDetailPage() {
   const { taskId } = useParams({ from: "/app/task/$taskId" });
   const { data, error, isError, isLoading, refetch } = useQuery({
     queryKey: ["task", taskId],
