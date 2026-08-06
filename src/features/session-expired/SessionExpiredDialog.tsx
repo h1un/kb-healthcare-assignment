@@ -1,4 +1,5 @@
 import { useNavigate } from "@tanstack/react-router";
+import type { KeyboardEvent } from "react";
 import { useAuth } from "@/features/auth/AuthProvider";
 import {
   AlertDialog,
@@ -19,17 +20,21 @@ export function SessionExpiredDialog() {
     clearSessionExpired();
     void navigate({ to: "/sign-in" });
   };
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      clearSessionExpired();
+    }
+  };
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleConfirm();
+    }
+  };
 
   return (
-    <AlertDialog open={sessionExpired} onOpenChange={(open) => !open && clearSessionExpired()}>
-      <AlertDialogContent
-        onKeyDown={(event) => {
-          if (event.key === "Enter") {
-            event.preventDefault();
-            handleConfirm();
-          }
-        }}
-      >
+    <AlertDialog open={sessionExpired} onOpenChange={handleOpenChange}>
+      <AlertDialogContent onKeyDown={handleKeyDown}>
         <AlertDialogHeader>
           <AlertDialogTitle>로그인이 만료됐어요.</AlertDialogTitle>
           <AlertDialogDescription>로그인 상태가 만료되었습니다. 다시 로그인해주세요.</AlertDialogDescription>

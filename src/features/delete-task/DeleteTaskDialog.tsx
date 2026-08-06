@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Trash2Icon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { deleteTask } from "@/entities/task/api";
 import { ApiError } from "@/shared/api/http-client";
 import { Button } from "@/shared/ui/button";
@@ -14,7 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/shared/ui/dialog";
-import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/shared/ui/field";
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/shared/ui/field";
 import { Input } from "@/shared/ui/input";
 
 type DeleteTaskDialogProps = {
@@ -28,7 +28,11 @@ export function DeleteTaskDialog({ taskId }: DeleteTaskDialogProps) {
   const [confirmValue, setConfirmValue] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const isConfirmed = confirmValue === taskId;
-  const deleteMutation = useMutation({
+  const {
+    isPending,
+    mutate: mutateDeleteTask,
+    reset: resetDeleteTask,
+  } = useMutation({
     mutationFn: () => deleteTask(taskId),
     onSuccess: async () => {
       queryClient.removeQueries({ queryKey: ["task", taskId], exact: true });
@@ -48,16 +52,20 @@ export function DeleteTaskDialog({ taskId }: DeleteTaskDialogProps) {
     if (!open) {
       setConfirmValue("");
       setErrorMessage(null);
-      deleteMutation.reset();
+      resetDeleteTask();
     }
-  }, [open]);
-  const handleDelete = () => {
-    if (!isConfirmed || deleteMutation.isPending) {
+  }, [open, resetDeleteTask]);
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!isConfirmed || isPending) {
       return;
     }
 
-    deleteMutation.mutate();
+    mutateDeleteTask();
   };
+  const handleCancel = () => setOpen(false);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -72,13 +80,7 @@ export function DeleteTaskDialog({ taskId }: DeleteTaskDialogProps) {
           <DialogTitle>할 일을 삭제할까요?</DialogTitle>
           <DialogDescription>삭제하려면 아래 입력창에 할 일 ID를 그대로 입력해주세요.</DialogDescription>
         </DialogHeader>
-        <form
-          className="flex flex-col gap-5"
-          onSubmit={(event) => {
-            event.preventDefault();
-            handleDelete();
-          }}
-        >
+        <form className="flex flex-col gap-5" onSubmit={handleSubmit} aria-busy={isPending}>
           <FieldGroup>
             <Field data-invalid={Boolean(errorMessage) || undefined}>
               <FieldLabel htmlFor="task-delete-confirm">할 일 ID</FieldLabel>
@@ -88,23 +90,36 @@ export function DeleteTaskDialog({ taskId }: DeleteTaskDialogProps) {
                 onChange={(event) => setConfirmValue(event.target.value)}
                 placeholder={taskId}
                 aria-invalid={Boolean(errorMessage)}
-                disabled={deleteMutation.isPending}
-                autoFocus
+                aria-describedby={errorMessage ? "task-delete-error" : "task-delete-description"}
+                aria-errormessage={errorMessage ? "task-delete-error" : undefined}
+                disabled={isPending}
               />
-              <FieldDescription>{errorMessage ?? `${taskId} 입력 시 제출 버튼이 활성화됩니다.`}</FieldDescription>
+              {errorMessage ? (
+                <FieldError id="task-delete-error">{errorMessage}</FieldError>
+              ) : (
+                <FieldDescription id="task-delete-description">
+                  {taskId} 입력 시 제출 버튼이 활성화됩니다.
+                </FieldDescription>
+              )}
             </Field>
           </FieldGroup>
           <DialogFooter>
-            <Button className="h-14 rounded-lg bg-muted text-base font-black text-muted-foreground hover:bg-muted/80" type="button" variant="outline" onClick={() => setOpen(false)} disabled={deleteMutation.isPending}>
+            <Button
+              className="h-14 rounded-lg bg-muted text-base font-black text-muted-foreground hover:bg-muted/80"
+              type="button"
+              variant="outline"
+              onClick={handleCancel}
+              disabled={isPending}
+            >
               취소
             </Button>
             <Button
               className="h-14 rounded-lg bg-destructive text-base font-black text-destructive-foreground hover:bg-destructive/90 disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100"
               type="submit"
               variant="destructive"
-              disabled={!isConfirmed || deleteMutation.isPending}
+              disabled={!isConfirmed || isPending}
             >
-              {deleteMutation.isPending ? "삭제 중..." : "제출"}
+              {isPending ? "삭제 중…" : "제출"}
             </Button>
           </DialogFooter>
         </form>

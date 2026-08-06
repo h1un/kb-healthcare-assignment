@@ -11,7 +11,7 @@ import { Skeleton } from "@/shared/ui/skeleton";
 
 export default function TaskDetailPage() {
   const { taskId } = useParams({ from: "/app/task/$taskId" });
-  const { data, error, isError, isLoading, refetch } = useQuery({
+  const { data, error, isLoading, isLoadingError, refetch } = useQuery({
     queryKey: ["task", taskId],
     queryFn: () => getTaskDetail(taskId),
     retry: (failureCount, queryError) => {
@@ -23,7 +23,7 @@ export default function TaskDetailPage() {
     },
   });
 
-  const isNotFound = error instanceof ApiError && error.status === 404;
+  const isNotFound = isLoadingError && error instanceof ApiError && error.status === 404;
 
   return (
     <section className="flex flex-col gap-5">
@@ -39,7 +39,7 @@ export default function TaskDetailPage() {
       {isLoading && <TaskDetailSkeleton />}
 
       {isNotFound && (
-        <Empty className="min-h-115 rounded-card bg-card px-8 py-10 shadow-card">
+        <Empty className="min-h-115 rounded-card bg-card px-8 py-10 shadow-card" role="status">
           <EmptyHeader>
             <EmptyMedia className="mb-3 size-16 rounded-tile bg-kb-yellow-soft text-kb-ink" variant="icon">
               <ListChecksIcon className="size-8" aria-hidden="true" />
@@ -55,8 +55,8 @@ export default function TaskDetailPage() {
         </Empty>
       )}
 
-      {isError && !isNotFound && (
-        <Empty className="min-h-110 rounded-card bg-card">
+      {isLoadingError && !isNotFound && (
+        <Empty className="min-h-110 rounded-card bg-card" role="alert">
           <EmptyHeader>
             <EmptyMedia variant="icon">
               <RefreshCwIcon aria-hidden="true" />
@@ -91,7 +91,10 @@ export default function TaskDetailPage() {
 
 function TaskDetailSkeleton() {
   return (
-    <article className="rounded-card bg-card p-7 shadow-card">
+    <article className="rounded-card bg-card p-7 shadow-card" aria-busy="true">
+      <p className="sr-only" role="status">
+        할 일 상세 정보를 불러오는 중입니다.
+      </p>
       <Skeleton className="h-5 w-24 rounded-full" />
       <Skeleton className="mt-6 h-10 w-3/4 rounded-2xl" />
       <Skeleton className="mt-4 h-6 w-full rounded-xl" />

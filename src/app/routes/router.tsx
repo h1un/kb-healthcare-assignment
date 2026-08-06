@@ -1,5 +1,5 @@
-import { createRootRoute, createRoute, createRouter, Navigate, Outlet } from "@tanstack/react-router";
-import { lazy, Suspense, type ComponentType } from "react";
+import { createRootRoute, createRoute, createRouter, Navigate, Outlet, useRouterState } from "@tanstack/react-router";
+import { lazy, Suspense, useEffect, useRef, type ComponentType } from "react";
 import { useAuth } from "@/features/auth/AuthProvider";
 import { SessionExpiredDialog } from "@/features/session-expired/SessionExpiredDialog";
 import { NotFoundPage } from "@/pages/not-found/NotFoundPage";
@@ -13,8 +13,24 @@ const TaskListPage = lazy(() => import("@/pages/task-list/TaskListPage"));
 
 function RouteFallback() {
   return (
-    <div className="flex min-h-80 items-center justify-center px-6 text-center text-sm font-bold text-muted-foreground">
+    <div
+      role="status"
+      aria-live="polite"
+      className="flex min-h-80 items-center justify-center px-6 text-center text-sm font-bold text-muted-foreground"
+    >
       화면을 불러오고 있어요.
+    </div>
+  );
+}
+
+function AuthCheckingFallback() {
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      className="flex min-h-svh items-center justify-center bg-background px-6 text-center text-sm font-bold text-muted-foreground"
+    >
+      로그인 상태를 확인하고 있어요.
     </div>
   );
 }
@@ -30,6 +46,22 @@ function withSuspense(Component: ComponentType) {
 }
 
 function RootShell() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const previousPathnameRef = useRef(pathname);
+
+  useEffect(() => {
+    if (previousPathnameRef.current === pathname) {
+      return;
+    }
+
+    previousPathnameRef.current = pathname;
+    const frameId = window.requestAnimationFrame(() => {
+      document.getElementById("main-content")?.focus({ preventScroll: true });
+    });
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [pathname]);
+
   return (
     <>
       <Outlet />
@@ -42,11 +74,7 @@ function AppShell() {
   const { status, isAuthenticated } = useAuth();
 
   if (status === "checking") {
-    return (
-      <div className="flex min-h-svh items-center justify-center bg-background px-6 text-center text-sm font-bold text-muted-foreground">
-        로그인 상태를 확인하고 있어요.
-      </div>
-    );
+    return <AuthCheckingFallback />;
   }
 
   if (!isAuthenticated) {
@@ -61,6 +89,16 @@ function AppShell() {
 }
 
 function PublicShell() {
+  const { status, isAuthenticated } = useAuth();
+
+  if (status === "checking") {
+    return <AuthCheckingFallback />;
+  }
+
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
+
   return (
     <AppLayout>
       <Outlet />

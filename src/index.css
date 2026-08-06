@@ -15,28 +15,28 @@
   --secondary: #eef1f5;
   --secondary-foreground: #3b424e;
   --muted: #f0f1f3;
-  --muted-foreground: #808894;
+  --muted-foreground: #626b78;
   --accent: #fff0a8;
   --accent-foreground: #252a34;
-  --destructive: #ff5a68;
+  --destructive: #c52f45;
   --destructive-foreground: #ffffff;
   --border: #e1e4ea;
-  --input: #e1e4ea;
-  --ring: #ffcc00;
+  --input: #8b94a1;
+  --ring: #6f5900;
   --radius: 1.25rem;
 
   --kb-yellow: #ffcc00;
   --kb-yellow-soft: #fff6c6;
   --kb-ink: #232832;
-  --kb-gray: #808894;
-  --kb-blue: #4c83ff;
+  --kb-gray: #626b78;
+  --kb-blue: #2563c9;
   --kb-pink: #ffe8ee;
   --kb-green: #22c55e;
   --chart-1: #ffcc00;
-  --chart-2: #4c83ff;
+  --chart-2: #2563c9;
   --chart-3: #22c55e;
-  --chart-4: #ff8aa0;
-  --chart-5: #808894;
+  --chart-4: #c52f45;
+  --chart-5: #626b78;
   --sidebar: #ffffff;
   --sidebar-foreground: #2f3541;
   --sidebar-primary: #ffcc00;
@@ -44,7 +44,7 @@
   --sidebar-accent: #fff6c6;
   --sidebar-accent-foreground: #252a34;
   --sidebar-border: #e1e4ea;
-  --sidebar-ring: #ffcc00;
+  --sidebar-ring: #6f5900;
 }
 
 @theme inline {
@@ -111,6 +111,8 @@
 }
 
 html {
+  color-scheme: light;
+  scroll-padding-block: calc(6rem + env(safe-area-inset-top)) calc(7rem + env(safe-area-inset-bottom));
   font-family: "Pretendard Variable", Pretendard, system-ui, sans-serif;
   background: var(--background);
   color: var(--foreground);
@@ -146,6 +148,27 @@ input,
 textarea,
 select {
   font: inherit;
+}
+
+a,
+button,
+input,
+select,
+textarea {
+  scroll-margin-block: 6rem;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgb(111 89 0 / 0.16);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 .dark {

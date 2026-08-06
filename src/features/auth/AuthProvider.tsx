@@ -77,17 +77,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setSessionExpired(false);
     setStatus("anonymous");
   }, [queryClient]);
+  const clearSessionExpired = useCallback(() => {
+    setSessionExpired(false);
+  }, []);
 
   const value = useMemo<AuthContextValue>(
     () => ({
       status,
       isAuthenticated: status === "authenticated",
       sessionExpired,
-      clearSessionExpired: () => setSessionExpired(false),
+      clearSessionExpired,
       login,
       logout,
     }),
-    [login, logout, sessionExpired, status],
+    [clearSessionExpired, login, logout, sessionExpired, status],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

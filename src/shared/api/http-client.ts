@@ -1,7 +1,7 @@
+import type { ZodType } from "zod";
 import { clearSessionTokens, getAccessToken, setSessionTokens } from "./token-store";
 import type { AuthTokenResponse, ErrorResponse } from "./types";
 import { authTokenResponseSchema } from "./validators";
-import type { ZodType } from "zod";
 
 type ApiRequestOptions<T> = RequestInit & {
   responseSchema?: ZodType<T>;
@@ -11,8 +11,8 @@ type ApiRequestOptions<T> = RequestInit & {
 let refreshPromise: Promise<boolean> | null = null;
 
 export class ApiError extends Error {
-  status: number;
-  errorMessage: string;
+  readonly status: number;
+  readonly errorMessage: string;
 
   constructor(status: number, errorMessage: string) {
     super(errorMessage);
@@ -44,8 +44,7 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions<T> 
   return parseResponse<T>(response, options.responseSchema);
 }
 
-async function fetchWithAuth<T>(path: string, options: ApiRequestOptions<T>) {
-  const { responseSchema: _responseSchema, skipAuthRefresh: _skipAuthRefresh, ...fetchOptions } = options;
+async function fetchWithAuth(path: string, options: RequestInit) {
   const headers = new Headers(options.headers);
   const token = getAccessToken();
 
@@ -58,7 +57,7 @@ async function fetchWithAuth<T>(path: string, options: ApiRequestOptions<T>) {
   }
 
   return fetch(path, {
-    ...fetchOptions,
+    ...options,
     headers,
     credentials: "include",
   });
@@ -87,8 +86,10 @@ async function requestRefreshAccessToken() {
 }
 
 async function requestWithNetworkError<T>(path: string, options: ApiRequestOptions<T>) {
+  const { responseSchema: _responseSchema, skipAuthRefresh: _skipAuthRefresh, ...fetchOptions } = options;
+
   try {
-    return await fetchWithAuth(path, options);
+    return await fetchWithAuth(path, fetchOptions);
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError") {
       throw error;
@@ -126,8 +127,13 @@ async function parseResponse<T>(response: Response, responseSchema?: ZodType<T>)
   return parsed.data;
 }
 
-function isErrorResponse(value: unknown): value is Partial<ErrorResponse> {
-  return typeof value === "object" && value !== null && "errorMessage" in value;
+function isErrorResponse(value: unknown): value is ErrorResponse {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "errorMessage" in value &&
+    typeof value.errorMessage === "string"
+  );
 }
 
 function dispatchAuthExpired() {

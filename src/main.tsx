@@ -15,10 +15,28 @@ async function enableMocking() {
   return worker.start({ onUnhandledRequest: "bypass" });
 }
 
-void enableMocking().then(() => {
-  createRoot(document.getElementById("root")!).render(
+function renderApp() {
+  const rootElement = document.getElementById("root");
+
+  if (!rootElement) {
+    throw new Error("Root element not found.");
+  }
+
+  createRoot(rootElement).render(
     <StrictMode>
       <App />
     </StrictMode>,
   );
-});
+}
+
+async function bootstrap() {
+  try {
+    await enableMocking();
+  } catch (error) {
+    console.error("Mock service worker initialization failed.", error);
+  }
+
+  renderApp();
+}
+
+void bootstrap();

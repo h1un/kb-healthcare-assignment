@@ -8,14 +8,17 @@ import { Skeleton } from "@/shared/ui/skeleton";
 
 export default function MemberPage() {
   const { logout } = useAuth();
-  const { data, isError, isLoading, refetch } = useQuery({
+  const { data, isLoading, isLoadingError, refetch } = useQuery({
     queryKey: ["user"],
     queryFn: getUser,
   });
 
   if (isLoading) {
     return (
-      <section className="grid grid-cols-[auto_1fr] items-center gap-6 rounded-card bg-card p-7 shadow-card">
+      <section className="grid grid-cols-[auto_1fr] items-center gap-6 rounded-card bg-card p-7 shadow-card" aria-busy="true">
+        <p className="sr-only" role="status">
+          회원정보를 불러오는 중입니다.
+        </p>
         <Skeleton className="size-24 rounded-card" />
         <div>
           <Skeleton className="h-5 w-20 rounded-xl" />
@@ -26,9 +29,9 @@ export default function MemberPage() {
     );
   }
 
-  if (isError || !data) {
+  if (isLoadingError || !data) {
     return (
-      <Empty className="min-h-110 rounded-card bg-card">
+      <Empty className="min-h-110 rounded-card bg-card" role="alert">
         <EmptyHeader>
           <EmptyMedia variant="icon">
             <UserRoundIcon aria-hidden="true" />

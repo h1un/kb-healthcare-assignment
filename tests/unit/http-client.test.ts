@@ -106,4 +106,14 @@ describe("apiRequest", () => {
       errorMessage: "응답 형식이 올바르지 않습니다.",
     });
   });
+
+  it("ignores non-string error messages", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(Response.json({ errorMessage: 400 }, { status: 400 })));
+
+    await expect(apiRequest("/api/sign-in", { skipAuthRefresh: true })).rejects.toMatchObject({
+      name: "ApiError",
+      status: 400,
+      errorMessage: "요청을 처리하지 못했습니다.",
+    });
+  });
 });

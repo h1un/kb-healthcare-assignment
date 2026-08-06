@@ -16,7 +16,7 @@ test("로그인 후 대시보드와 할 일 상세를 확인한다", async ({ pa
   await page.getByRole("link", { name: "할 일 목록으로 이동" }).click();
 
   await expect(page.getByText(/불러온 \d+개의 할 일/)).toBeVisible();
-  await page.getByRole("link", { name: "TASK-001 아침 스트레칭 10분 상세 보기" }).click();
+  await page.getByRole("link", { name: /TASK-001 아침 스트레칭 10분/ }).click();
 
   await expect(page.getByText("TASK-001")).toBeVisible();
   await expect(page.getByRole("heading", { name: "아침 스트레칭 10분" })).toBeVisible();
@@ -33,7 +33,7 @@ test("할 일 목록은 끝까지 불러오면서 화면 주변 카드만 렌더
     await expect(page.getByText(`불러온 ${count}개의 할 일`)).toBeVisible();
   }
 
-  const renderedCards = page.locator('a[aria-label$="상세 보기"]');
+  const renderedCards = page.getByRole("list", { name: "할 일 목록" }).getByRole("link");
   await expect(renderedCards).not.toHaveCount(0);
   expect(await renderedCards.count()).toBeLessThan(20);
 });
@@ -83,7 +83,7 @@ test("삭제 확인 입력값이 할 일 ID와 같을 때만 삭제할 수 있�
   await signIn(page);
 
   await page.getByRole("link", { name: "할 일 목록으로 이동" }).click();
-  await page.getByRole("link", { name: "TASK-002 물 2L 마시기 상세 보기" }).click();
+  await page.getByRole("link", { name: /TASK-002 물 2L 마시기/ }).click();
   await page.getByRole("button", { name: "삭제하기" }).click();
 
   const deleteButton = page.getByRole("button", { name: "제출", exact: true });
