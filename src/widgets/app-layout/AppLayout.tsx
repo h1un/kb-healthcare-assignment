@@ -30,7 +30,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
   return (
     <div className="min-h-svh bg-background text-foreground">
-      <div className="mx-auto flex min-h-svh w-full max-w-[720px] flex-col bg-background shadow-[0_0_0_1px_var(--border)]">
+      <div className="mx-auto flex min-h-svh w-full max-w-180 flex-col bg-background shadow-frame">
         <header className="sticky top-0 z-20 flex h-20 items-center justify-between border-b border-border bg-card/95 px-7 backdrop-blur">
           <Link to="/" aria-label="대시보드" className="flex w-20 items-center">
             <img src="/logo_text.svg" alt="KB O'CARE" className="h-6 w-auto" />
@@ -48,7 +48,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         <main className={cn("flex-1 px-7 py-7", shouldShowRouteNav ? "pb-28" : "pb-7")}>{children}</main>
 
         {shouldShowRouteNav ? (
-          <nav className="fixed inset-x-0 bottom-0 z-30 mx-auto w-full max-w-[720px] border-t border-border bg-card/95 px-8 py-3 backdrop-blur">
+          <nav className="fixed inset-x-0 bottom-0 z-30 mx-auto w-full max-w-180 border-t border-border bg-card/95 px-8 py-3 backdrop-blur">
             <div className="grid grid-cols-2 gap-2">
               {navItems.map((item) => {
                 const Icon = item.icon;

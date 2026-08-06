@@ -15,8 +15,8 @@ export default function MemberPage() {
 
   if (isLoading) {
     return (
-      <section className="grid grid-cols-[auto_1fr] items-center gap-6 rounded-[2rem] bg-card p-7 shadow-[0_16px_40px_rgba(35,40,50,0.06)]">
-        <Skeleton className="size-24 rounded-[2rem]" />
+      <section className="grid grid-cols-[auto_1fr] items-center gap-6 rounded-card bg-card p-7 shadow-card">
+        <Skeleton className="size-24 rounded-card" />
         <div>
           <Skeleton className="h-5 w-20 rounded-xl" />
           <Skeleton className="mt-3 h-8 w-36 rounded-2xl" />
@@ -28,7 +28,7 @@ export default function MemberPage() {
 
   if (isError || !data) {
     return (
-      <Empty className="min-h-[440px] rounded-[2rem] bg-card">
+      <Empty className="min-h-110 rounded-card bg-card">
         <EmptyHeader>
           <EmptyMedia variant="icon">
             <UserRoundIcon aria-hidden="true" />
@@ -44,9 +44,9 @@ export default function MemberPage() {
   }
 
   return (
-    <section className="rounded-[2rem] bg-card p-7 shadow-[0_16px_40px_rgba(35,40,50,0.06)]">
+    <section className="rounded-card bg-card p-7 shadow-card">
       <div className="grid grid-cols-[auto_1fr] items-center gap-6">
-        <div className="grid size-24 place-items-center rounded-[2rem] bg-kb-yellow text-kb-ink">
+        <div className="grid size-24 place-items-center rounded-card bg-kb-yellow text-kb-ink">
           <UserRoundIcon className="size-11" aria-hidden="true" />
         </div>
         <div>

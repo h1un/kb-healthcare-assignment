@@ -95,11 +95,11 @@ export function DeleteTaskDialog({ taskId }: DeleteTaskDialogProps) {
             </Field>
           </FieldGroup>
           <DialogFooter>
-            <Button className="h-14 rounded-[1.25rem] bg-muted text-base font-black text-muted-foreground hover:bg-muted/80" type="button" variant="outline" onClick={() => setOpen(false)} disabled={deleteMutation.isPending}>
+            <Button className="h-14 rounded-lg bg-muted text-base font-black text-muted-foreground hover:bg-muted/80" type="button" variant="outline" onClick={() => setOpen(false)} disabled={deleteMutation.isPending}>
               취소
             </Button>
             <Button
-              className="h-14 rounded-[1.25rem] bg-destructive text-base font-black text-destructive-foreground hover:bg-destructive/90 disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100"
+              className="h-14 rounded-lg bg-destructive text-base font-black text-destructive-foreground hover:bg-destructive/90 disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100"
               type="submit"
               variant="destructive"
               disabled={!isConfirmed || deleteMutation.isPending}

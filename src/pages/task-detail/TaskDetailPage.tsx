@@ -39,15 +39,15 @@ export default function TaskDetailPage() {
       {isLoading && <TaskDetailSkeleton />}
 
       {isNotFound && (
-        <Empty className="min-h-[460px] rounded-[2rem] bg-card px-8 py-10 shadow-[0_16px_40px_rgba(35,40,50,0.06)]">
+        <Empty className="min-h-115 rounded-card bg-card px-8 py-10 shadow-card">
           <EmptyHeader>
-            <EmptyMedia className="mb-3 size-16 rounded-[1.75rem] bg-kb-yellow-soft text-kb-ink" variant="icon">
+            <EmptyMedia className="mb-3 size-16 rounded-tile bg-kb-yellow-soft text-kb-ink" variant="icon">
               <ListChecksIcon className="size-8" aria-hidden="true" />
             </EmptyMedia>
             <EmptyTitle className="text-2xl font-black text-kb-ink">할 일을 찾을 수 없어요</EmptyTitle>
             <EmptyDescription className="font-bold">이미 삭제됐거나 존재하지 않는 할 일입니다.</EmptyDescription>
           </EmptyHeader>
-          <EmptyContent className="max-w-[280px]">
+          <EmptyContent className="max-w-70">
             <Button className="h-12 w-full rounded-2xl bg-kb-yellow text-base font-black text-kb-ink hover:bg-kb-yellow/90" asChild>
               <Link to="/task">목록으로 이동</Link>
             </Button>
@@ -56,7 +56,7 @@ export default function TaskDetailPage() {
       )}
 
       {isError && !isNotFound && (
-        <Empty className="min-h-[440px] rounded-[2rem] bg-card">
+        <Empty className="min-h-110 rounded-card bg-card">
           <EmptyHeader>
             <EmptyMedia variant="icon">
               <RefreshCwIcon aria-hidden="true" />
@@ -72,7 +72,7 @@ export default function TaskDetailPage() {
 
       {data && (
         <>
-          <article className="rounded-[2rem] bg-card p-7 shadow-[0_16px_40px_rgba(35,40,50,0.06)]">
+          <article className="rounded-card bg-card p-7 shadow-card">
             <Badge variant="destructive">{taskId}</Badge>
             <h2 className="mt-6 text-3xl font-black leading-tight text-kb-ink">{data.title}</h2>
             <p className="mt-4 text-base font-bold leading-relaxed text-muted-foreground">{data.memo}</p>
@@ -91,7 +91,7 @@ export default function TaskDetailPage() {
 
 function TaskDetailSkeleton() {
   return (
-    <article className="rounded-[2rem] bg-card p-7 shadow-[0_16px_40px_rgba(35,40,50,0.06)]">
+    <article className="rounded-card bg-card p-7 shadow-card">
       <Skeleton className="h-5 w-24 rounded-full" />
       <Skeleton className="mt-6 h-10 w-3/4 rounded-2xl" />
       <Skeleton className="mt-4 h-6 w-full rounded-xl" />

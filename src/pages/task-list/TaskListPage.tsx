@@ -46,7 +46,7 @@ export default function TaskListPage() {
       <section className="flex flex-col gap-5">
         <Skeleton className="h-5 w-32 rounded-xl" />
         {Array.from({ length: 6 }, (_, index) => (
-          <Skeleton key={index} className="h-[116px] rounded-[2rem]" />
+          <Skeleton key={index} className="h-29 rounded-card" />
         ))}
       </section>
     );
@@ -54,7 +54,7 @@ export default function TaskListPage() {
 
   if (isError && !hasLoadedTasks) {
     return (
-      <Empty className="min-h-[520px] rounded-[2rem] bg-card">
+      <Empty className="min-h-130 rounded-card bg-card">
         <EmptyHeader>
           <EmptyMedia variant="icon">
             <RefreshCwIcon aria-hidden="true" />
@@ -71,7 +71,7 @@ export default function TaskListPage() {
 
   if (tasks.length === 0) {
     return (
-      <Empty className="min-h-[520px] rounded-[2rem] bg-card">
+      <Empty className="min-h-130 rounded-card bg-card">
         <EmptyHeader>
           <EmptyMedia variant="icon">
             <ClipboardListIcon aria-hidden="true" />
@@ -118,7 +118,7 @@ export default function TaskListPage() {
 function LoadMoreRow({ hasError, onRetry }: { hasError: boolean; onRetry: () => void }) {
   if (hasError) {
     return (
-      <div className="flex h-[116px] items-center justify-center gap-3 rounded-[2rem] bg-card text-sm font-bold text-muted-foreground">
+      <div className="flex h-29 items-center justify-center gap-3 rounded-card bg-card text-sm font-bold text-muted-foreground">
         다음 페이지를 불러오지 못했어요.
         <Button type="button" variant="outline" onClick={onRetry}>
           다시 불러오기
@@ -127,7 +127,7 @@ function LoadMoreRow({ hasError, onRetry }: { hasError: boolean; onRetry: () => 
     );
   }
 
-  return <Skeleton className="h-[116px] rounded-[2rem]" />;
+  return <Skeleton className="h-29 rounded-card" />;
 }
 
 function TaskCard({ task }: { task: TaskItem }) {
@@ -138,11 +138,11 @@ function TaskCard({ task }: { task: TaskItem }) {
       to="/task/$taskId"
       params={{ taskId: task.id }}
       aria-label={`${task.id} ${task.title} 상세 보기`}
-      className="flex h-[116px] items-center gap-3 rounded-[2rem] bg-card p-4 shadow-[0_16px_40px_rgba(35,40,50,0.06)] min-[360px]:gap-5 min-[360px]:p-6"
+      className="flex h-29 items-center gap-3 rounded-card bg-card p-4 shadow-card xs:gap-5 xs:p-6"
     >
       <span
         className={cn(
-          "grid size-11 shrink-0 place-items-center rounded-full min-[360px]:size-12",
+          "grid size-11 shrink-0 place-items-center rounded-full xs:size-12",
           isDone ? "bg-kb-blue/15 text-kb-blue" : "bg-kb-pink text-destructive",
         )}
       >
@@ -150,10 +150,10 @@ function TaskCard({ task }: { task: TaskItem }) {
       </span>
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
-          <h2 className="truncate text-lg font-black text-kb-ink min-[360px]:text-xl">{task.title}</h2>
+          <h2 className="truncate text-lg font-black text-kb-ink xs:text-xl">{task.title}</h2>
           <Badge variant={isDone ? "secondary" : "destructive"}>{isDone ? "완료" : "해야 할 일"}</Badge>
         </div>
-        <p className="mt-2 truncate text-sm font-bold text-muted-foreground min-[360px]:text-base">{task.memo}</p>
+        <p className="mt-2 truncate text-sm font-bold text-muted-foreground xs:text-base">{task.memo}</p>
       </div>
       <ChevronRightIcon className="size-6 shrink-0 text-muted-foreground" aria-hidden="true" />
     </Link>

@@ -13,7 +13,7 @@ const TaskListPage = lazy(() => import("@/pages/task-list/TaskListPage"));
 
 function RouteFallback() {
   return (
-    <div className="flex min-h-[320px] items-center justify-center px-6 text-center text-sm font-bold text-muted-foreground">
+    <div className="flex min-h-80 items-center justify-center px-6 text-center text-sm font-bold text-muted-foreground">
       화면을 불러오고 있어요.
     </div>
   );

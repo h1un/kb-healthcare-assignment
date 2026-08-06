@@ -54,7 +54,7 @@ export default function SignInPage() {
   return (
     <>
       <section className="flex min-h-[calc(100svh-15rem)] items-center justify-center py-6">
-        <section className="w-full max-w-[420px] rounded-[2rem] bg-card p-8 shadow-[0_24px_60px_rgba(35,40,50,0.08)]">
+        <section className="w-full max-w-105 rounded-card bg-card p-8 shadow-panel">
           <img src="/logo_text.svg" alt="KB O'CARE" className="h-8 w-auto" />
           <h1 className="mt-9 text-3xl font-black leading-tight text-kb-ink">케어 태스크를 시작해요</h1>
           <p className="mt-3 text-sm font-bold text-muted-foreground">테스트 계정으로 로그인할 수 있습니다.</p>

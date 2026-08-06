@@ -56,7 +56,7 @@ function AlertDialogContent({
         data-slot="alert-dialog-content"
         data-size={size}
         className={cn(
-          "group/alert-dialog-content fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-3rem)] -translate-x-1/2 -translate-y-1/2 gap-7 rounded-[2rem] bg-card px-5 py-8 text-card-foreground shadow-[0_28px_80px_rgba(35,40,50,0.22)] duration-150 outline-none data-[size=default]:sm:max-w-[420px] data-[size=sm]:sm:max-w-[360px] data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+          "group/alert-dialog-content fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-3rem)] -translate-x-1/2 -translate-y-1/2 gap-7 rounded-card bg-card px-5 py-8 text-card-foreground shadow-modal duration-150 outline-none data-[size=default]:sm:max-w-105 data-[size=sm]:sm:max-w-90 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
           className
         )}
         {...props}
@@ -121,7 +121,7 @@ function AlertDialogTitle({
     <AlertDialogPrimitive.Title
       data-slot="alert-dialog-title"
       className={cn(
-        "text-[21px] leading-tight font-black text-kb-ink",
+        "text-xl leading-tight font-black text-kb-ink",
         className
       )}
       {...props}
@@ -153,7 +153,7 @@ function AlertDialogAction({
 }: React.ComponentProps<typeof AlertDialogPrimitive.Action> &
   Pick<React.ComponentProps<typeof Button>, "variant" | "size">) {
   return (
-    <Button variant={variant} size={size} className={cn("h-14 rounded-[1.25rem] text-base font-black", className)} asChild>
+    <Button variant={variant} size={size} className={cn("h-14 rounded-lg text-base font-black", className)} asChild>
       <AlertDialogPrimitive.Action
         data-slot="alert-dialog-action"
         {...props}
@@ -170,7 +170,7 @@ function AlertDialogCancel({
 }: React.ComponentProps<typeof AlertDialogPrimitive.Cancel> &
   Pick<React.ComponentProps<typeof Button>, "variant" | "size">) {
   return (
-    <Button variant={variant} size={size} className={cn("h-14 rounded-[1.25rem] bg-muted text-base font-black text-muted-foreground hover:bg-muted/80", className)} asChild>
+    <Button variant={variant} size={size} className={cn("h-14 rounded-lg bg-muted text-base font-black text-muted-foreground hover:bg-muted/80", className)} asChild>
       <AlertDialogPrimitive.Cancel
         data-slot="alert-dialog-cancel"
         {...props}
