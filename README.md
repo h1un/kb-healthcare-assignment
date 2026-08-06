@@ -16,7 +16,7 @@ care@kbhealth.com / Password1
 - TypeScript 기반 화면/라우팅 구조
 - Tailwind CSS 기반 스타일링과 색상 토큰 관리
 - React Hook Form 기반 로그인 폼 상태 관리
-- WCAG를 고려한 label, button, dialog, navigation 구성
+- WCAG 2.2 AA 기준을 반영한 폼, 다이얼로그, 내비게이션 구성
 - FSD(Feature-Sliced Design) 구조를 과제 규모에 맞게 단순화 적용
 - MSW 기반 API mocking 및 테스트 가능한 개발 환경 구성
 - 모바일/WebView 환경을 고려한 단일 컬럼 반응형 레이아웃
@@ -31,10 +31,10 @@ care@kbhealth.com / Password1
 | Server State | TanStack Query |
 | List Rendering | TanStack Virtual |
 | Form | React Hook Form, Zod |
-| Styling | Tailwind CSS, shadcn/ui, Pretendard |
+| Styling | Tailwind CSS, shadcn/ui, Pretendard Variable 동적 서브셋 |
 | Mock API | MSW |
 | API Type | openapi-typescript |
-| Test | Vitest, Testing Library, Playwright |
+| Test | Vitest, Testing Library, Playwright, axe-core |
 | Icon | Lucide React |
 
 ## 구현 범위
@@ -49,7 +49,7 @@ care@kbhealth.com / Password1
 | 할 일 상세 | 상세 조회, 404 empty state, ID 입력 기반 삭제 확인 |
 | 회원정보 | `/api/user` 응답의 `name`, `memo` 표시 |
 | Mock API | OpenAPI 명세 기준 MSW handler 구성 |
-| 테스트 | 폼 검증 단위 테스트, 로그인/상세/삭제 E2E 테스트 |
+| 테스트 | 단위 테스트, 사용자 흐름 E2E, WCAG 자동 검사, 키보드·리플로우 검증 |
 
 ## 프로젝트 구조
 
@@ -138,6 +138,18 @@ npm run build
 ```
 
 `test:e2e`는 기존 개발 서버와 충돌하지 않도록 `5174` 포트를 사용합니다.
+Playwright E2E에는 axe 기반 WCAG 2.2 AA 검사, 키보드 탐색, 320px 리플로우, 200% 글자 확대 검증이 포함됩니다.
+
+## CI
+
+GitHub Actions는 push와 pull request마다 Node.js 22 환경에서 다음 검증을 수행합니다.
+
+1. 의존성 재현 설치
+2. 정적 검사와 단위 테스트
+3. 프로덕션 빌드
+4. Chromium 기반 Playwright E2E
+
+워크플로는 [ci.yml](./.github/workflows/ci.yml)에서 확인할 수 있습니다.
 
 ## 추후 개선사항
 
@@ -145,4 +157,3 @@ npm run build
 - 상태 변경: 완료/미완료 변경 API가 추가되면 카드 상태 토글과 대시보드 카운트 갱신을 연결할 수 있습니다.
 - 서버 로그아웃: 현재는 브라우저에 저장된 토큰을 삭제하는 클라이언트 로그아웃으로 처리했으며, 로그아웃 API가 제공되면 refresh token 무효화까지 확장할 수 있습니다.
 - 상태별 서버 필터: `/api/task`에 상태 필터 파라미터가 추가되면 `전체/해야할 일/한 일` 필터를 서버 페이지네이션과 함께 처리할 수 있습니다.
-
