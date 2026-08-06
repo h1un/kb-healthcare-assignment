@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { refreshSession, signIn, signOut } from "@/entities/auth/api";
@@ -17,16 +18,28 @@ function AuthProbe() {
       <span data-testid="status">{auth.status}</span>
       <span data-testid="authenticated">{String(auth.isAuthenticated)}</span>
       <span data-testid="expired">{String(auth.sessionExpired)}</span>
+      <button type="button" onClick={auth.logout}>
+        로그아웃
+      </button>
     </div>
   );
 }
 
 function renderAuthProvider() {
-  return render(
-    <AuthProvider>
-      <AuthProbe />
-    </AuthProvider>,
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+    },
+  });
+  const result = render(
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <AuthProbe />
+      </AuthProvider>
+    </QueryClientProvider>,
   );
+
+  return { ...result, queryClient };
 }
 
 describe("AuthProvider", () => {
@@ -71,13 +84,33 @@ describe("AuthProvider", () => {
       refreshToken: "refresh-new",
     });
 
-    renderAuthProvider();
+    const { queryClient } = renderAuthProvider();
     await waitFor(() => expect(screen.getByTestId("status")).toHaveTextContent("authenticated"));
+    queryClient.setQueryData(["user"], { name: "이전 사용자" });
 
     window.dispatchEvent(new CustomEvent("auth:expired"));
 
     await waitFor(() => expect(screen.getByTestId("status")).toHaveTextContent("anonymous"));
     expect(screen.getByTestId("expired")).toHaveTextContent("true");
+    expect(signOut).toHaveBeenCalledTimes(1);
+    expect(queryClient.getQueryData(["user"])).toBeUndefined();
+  });
+
+  it("clears cached server state on logout", async () => {
+    document.cookie = "token=refresh-existing; Path=/";
+    vi.mocked(refreshSession).mockResolvedValue({
+      accessToken: "access-new",
+      refreshToken: "refresh-new",
+    });
+
+    const { queryClient } = renderAuthProvider();
+    await waitFor(() => expect(screen.getByTestId("status")).toHaveTextContent("authenticated"));
+    queryClient.setQueryData(["user"], { name: "이전 사용자" });
+
+    screen.getByRole("button", { name: "로그아웃" }).click();
+
+    await waitFor(() => expect(screen.getByTestId("status")).toHaveTextContent("anonymous"));
+    expect(queryClient.getQueryData(["user"])).toBeUndefined();
     expect(signOut).toHaveBeenCalledTimes(1);
   });
 });

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { apiRequest } from "@/shared/api/http-client";
-import { clearSessionTokens, setSessionTokens } from "@/shared/api/token-store";
+import { clearSessionTokens, getAccessToken, setSessionTokens } from "@/shared/api/token-store";
 import { userResponseSchema } from "@/shared/api/validators";
 
 describe("apiRequest", () => {
@@ -56,6 +56,35 @@ describe("apiRequest", () => {
       status: 0,
       errorMessage: "네트워크 연결을 확인해주세요.",
     });
+  });
+
+  it("expires the session when the retried request still returns 401", async () => {
+    const expiredListener = vi.fn();
+    const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
+      const path = String(input);
+
+      if (path === "/api/refresh") {
+        return Response.json({
+          accessToken: "access-new",
+          refreshToken: "refresh-new",
+        });
+      }
+
+      return Response.json({ errorMessage: "인증 정보가 유효하지 않습니다." }, { status: 401 });
+    });
+
+    vi.stubGlobal("fetch", fetchMock);
+    setSessionTokens({ accessToken: "access-old", refreshToken: "refresh-old" });
+    window.addEventListener("auth:expired", expiredListener);
+
+    await expect(apiRequest("/api/user")).rejects.toMatchObject({
+      name: "ApiError",
+      status: 401,
+    });
+
+    window.removeEventListener("auth:expired", expiredListener);
+    expect(expiredListener).toHaveBeenCalledTimes(1);
+    expect(getAccessToken()).toBeNull();
   });
 
   it("normalizes invalid JSON responses", async () => {

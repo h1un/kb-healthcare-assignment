@@ -23,6 +23,49 @@ test("로그인 후 대시보드와 할 일 상세를 확인한다", async ({ pa
   await expect(page.getByText(/등록$/)).toBeVisible();
 });
 
+test("할 일 목록은 끝까지 불러오면서 화면 주변 카드만 렌더링한다", async ({ page }) => {
+  await signIn(page);
+  await page.getByRole("link", { name: "할 일", exact: true }).click();
+  await expect(page.getByText("불러온 12개의 할 일")).toBeVisible();
+
+  for (const count of [24, 36, 48, 60, 72, 84, 87]) {
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    await expect(page.getByText(`불러온 ${count}개의 할 일`)).toBeVisible();
+  }
+
+  const renderedCards = page.locator('a[aria-label$="상세 보기"]');
+  await expect(renderedCards).not.toHaveCount(0);
+  expect(await renderedCards.count()).toBeLessThan(20);
+});
+
+test("mock API는 발급되지 않은 인증 토큰을 거부한다", async ({ page }) => {
+  await page.goto("/sign-in");
+  await expect(page.getByRole("heading", { name: "케어 태스크를 시작해요" })).toBeVisible();
+
+  const statuses = await page.evaluate(async () => {
+    const [refreshResponse, userResponse] = await Promise.all([
+      fetch("/api/refresh", { method: "POST", credentials: "include" }),
+      fetch("/api/user", { headers: { Authorization: "Bearer access-not-issued" } }),
+    ]);
+
+    return [refreshResponse.status, userResponse.status];
+  });
+
+  expect(statuses).toEqual([401, 401]);
+});
+
+test("320px 화면에서 대시보드 통계 카드가 읽기 가능한 한 열로 배치된다", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  await signIn(page);
+
+  const statCards = page.locator('[data-slot="card"]').filter({ has: page.getByText(/^(일|해야할 일|한 일)$/) });
+  await expect(statCards).toHaveCount(3);
+
+  const widths = await statCards.evaluateAll((cards) => cards.map((card) => card.getBoundingClientRect().width));
+  expect(widths.every((width) => width > 240)).toBe(true);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(320);
+});
+
 test("로그인 실패 모달은 Enter로 닫힌다", async ({ page }) => {
   await page.goto("/sign-in");
   await page.getByLabel("이메일").fill("care@kbhealth.com");
