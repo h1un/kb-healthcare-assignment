@@ -37,6 +37,12 @@ async function expectNoHorizontalOverflow(page: Page) {
 test("로그인 화면은 WCAG 2.2 AA 자동 검사를 통과한다", async ({ page }) => {
   await page.goto("/sign-in");
   await expect(page.getByRole("heading", { name: "케어 태스크를 시작해요" })).toBeVisible();
+  await expect
+    .poll(() => page.evaluate(async () => {
+      await document.fonts.ready;
+      return document.fonts.check('16px "Pretendard Variable"');
+    }))
+    .toBe(true);
 
   await expectNoAccessibilityViolations(page);
 
