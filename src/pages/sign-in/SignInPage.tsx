@@ -23,7 +23,7 @@ export default function SignInPage() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isValid },
   } = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
     mode: "onChange",
@@ -107,7 +107,7 @@ export default function SignInPage() {
               <Button
                 className="mt-2 h-12 w-full rounded-2xl text-base font-black"
                 type="submit"
-                disabled={isSubmitting}
+                disabled={!isValid || isSubmitting}
               >
                 {isSubmitting ? "로그인 중…" : "로그인"}
               </Button>

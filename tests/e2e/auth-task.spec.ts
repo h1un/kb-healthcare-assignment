@@ -54,6 +54,23 @@ test("mock API는 발급되지 않은 인증 토큰을 거부한다", async ({ p
   expect(statuses).toEqual([401, 401]);
 });
 
+test("로그인 제출은 이메일과 비밀번호가 유효할 때만 활성화된다", async ({ page }) => {
+  await page.goto("/sign-in");
+
+  const submitButton = page.getByRole("button", { name: "로그인" });
+  await expect(submitButton).toBeDisabled();
+
+  await page.getByLabel("이메일").fill("invalid-email");
+  await page.getByLabel("비밀번호").fill("short");
+  await expect(page.locator("#email-error")).toBeVisible();
+  await expect(page.locator("#password-error")).toBeVisible();
+  await expect(submitButton).toBeDisabled();
+
+  await page.getByLabel("이메일").fill(TEST_EMAIL);
+  await page.getByLabel("비밀번호").fill(TEST_PASSWORD);
+  await expect(submitButton).toBeEnabled();
+});
+
 test("320px 화면에서 대시보드 통계 카드가 읽기 가능한 한 열로 배치된다", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 568 });
   await signIn(page);

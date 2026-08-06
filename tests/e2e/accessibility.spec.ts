@@ -46,8 +46,11 @@ test("로그인 화면은 WCAG 2.2 AA 자동 검사를 통과한다", async ({ p
 
   await expectNoAccessibilityViolations(page);
 
-  await page.getByRole("button", { name: "로그인" }).click();
+  await page.getByLabel("이메일").fill("invalid-email");
+  await page.getByLabel("비밀번호").fill("short");
   await expect(page.locator("#email-error")).toBeVisible();
+  await expect(page.locator("#password-error")).toBeVisible();
+  await expect(page.getByRole("button", { name: "로그인" })).toBeDisabled();
   await expectNoAccessibilityViolations(page);
 });
 
@@ -170,9 +173,8 @@ test("키보드로 본문 이동, 폼 오류 확인, 모달 닫기가 가능하�
   await page.keyboard.press("Enter");
   await expect(page.locator("#main-content")).toBeFocused();
 
-  await page.getByRole("button", { name: "로그인" }).focus();
-  await page.keyboard.press("Enter");
-  await expect(page.getByLabel("이메일")).toBeFocused();
+  await page.getByLabel("이메일").focus();
+  await page.getByLabel("이메일").fill("invalid-email");
   await expect(page.locator("#email-error")).toHaveAttribute("role", "alert");
 
   await page.getByLabel("이메일").fill(TEST_EMAIL);
