@@ -9,11 +9,27 @@ KB헬스케어 프론트엔드 과제 제출용 React SPA입니다.
 care@kbhealth.com / Password1
 ```
 
-## JD 반영 방향
+## 요구사항 반영
+
+| 영역 | 반영 내용 | 주요 구현 |
+| --- | --- | --- |
+| 공통 | React 19·TypeScript, 색상 토큰, Pretendard, 화면별 고유 아이콘 | [`package.json`](./package.json), [`index.css`](./src/index.css) |
+| 내비게이션 | 대시보드·할 일 라우트와 로그인 상태별 로그인·회원정보 진입점 | [`AppLayout.tsx`](./src/widgets/app-layout/AppLayout.tsx), [`router.tsx`](./src/app/routes/router.tsx) |
+| 로그인 | 이메일·비밀번호 검증, 제출 활성화 조건, 로그인 요청과 실패 모달 | [`SignInPage.tsx`](./src/pages/sign-in/SignInPage.tsx), [`sign-in-schema.ts`](./src/features/auth/sign-in-schema.ts) |
+| 인증 | access token 관리, refresh 요청, 보호 라우트, 세션 만료 안내 | [`AuthProvider.tsx`](./src/features/auth/AuthProvider.tsx), [`http-client.ts`](./src/shared/api/http-client.ts) |
+| 대시보드 | 일·해야할 일·한 일 통계 표시 | [`DashboardPage.tsx`](./src/pages/dashboard/DashboardPage.tsx) |
+| 할 일 목록 | title·memo 카드, 가상 스크롤, 무한 스크롤, 상세 이동 | [`TaskListPage.tsx`](./src/pages/task-list/TaskListPage.tsx) |
+| 할 일 상세 | 상세 조회, 404 화면, ID 입력 기반 삭제 확인과 목록 이동 | [`TaskDetailPage.tsx`](./src/pages/task-detail/TaskDetailPage.tsx), [`DeleteTaskDialog.tsx`](./src/features/delete-task/DeleteTaskDialog.tsx) |
+| 회원정보 | `/api/user` 응답의 `name`, `memo` 표시 | [`MemberPage.tsx`](./src/pages/member/MemberPage.tsx) |
+| API·제출 문서 | OpenAPI 타입 생성, MSW 모킹, AI 활용 범위 기록 | [`schema.ts`](./src/shared/api/schema.ts), [`handlers.ts`](./src/shared/mocks/handlers.ts), [`AI_USAGE.md`](./AI_USAGE.md) |
+
+핵심 사용자 흐름은 [`auth-task.spec.ts`](./tests/e2e/auth-task.spec.ts), 접근성은 [`accessibility.spec.ts`](./tests/e2e/accessibility.spec.ts), 인증과 API 예외 처리는 [`tests/unit`](./tests/unit)에서 검증합니다.
+
+### JD 반영 방향
 
 과제 범위에서 검증 가능한 JD 우대사항을 중심으로 반영했습니다.
 
-- TypeScript 기반 화면/라우팅 구조
+- TypeScript와 TanStack Router 기반 화면·라우팅 구조
 - Tailwind CSS 기반 스타일링과 색상 토큰 관리
 - React Hook Form 기반 로그인 폼 상태 관리
 - WCAG 2.2 AA 기준을 반영한 폼, 다이얼로그, 내비게이션 구성
@@ -36,20 +52,6 @@ care@kbhealth.com / Password1
 | API Type | openapi-typescript |
 | Test | Vitest, Testing Library, Playwright, axe-core |
 | Icon | Lucide React |
-
-## 구현 범위
-
-| 영역 | 구현 내용 |
-| --- | --- |
-| 공통 레이아웃 | 상단 헤더, 하단 내비게이션, 로그인/회원정보 진입점 |
-| 로그인 | 이메일/비밀번호 검증, 로그인 요청, 실패 모달 |
-| 인증 | access token 관리, refresh 요청, 보호 라우트, 세션 만료 안내 |
-| 대시보드 | 일, 해야할 일, 한 일 통계 표시 |
-| 할 일 목록 | 카드 목록, 무한 스크롤, 가상 스크롤, 상세 이동 |
-| 할 일 상세 | 상세 조회, 404 empty state, ID 입력 기반 삭제 확인 |
-| 회원정보 | `/api/user` 응답의 `name`, `memo` 표시 |
-| Mock API | OpenAPI 명세 기준 MSW handler 구성 |
-| 테스트 | 단위 테스트, 사용자 흐름 E2E, WCAG 자동 검사, 키보드·리플로우 검증 |
 
 ## 프로젝트 구조
 
@@ -90,7 +92,7 @@ src/
 - `entities`: task, user, dashboard, auth 등 도메인 API
 - `shared`: 공통 UI, API client, 유틸, mock
 
-## OpenAPI 사용
+## OpenAPI와 API 범위
 
 OpenAPI 명세는 `openapi-typescript`로 TypeScript schema를 생성했습니다.
 
@@ -100,8 +102,6 @@ npm run generate:api
 
 생성된 타입은 `src/shared/api/schema.ts`에 위치합니다.  
 API client는 생성 도구에 맡기지 않고, 과제 요구 흐름에 맞춰 `fetch` 기반으로 직접 작성했습니다.
-
-## API 기준
 
 | API | 용도 |
 | --- | --- |
@@ -128,7 +128,7 @@ npm run dev
 npm run preview:mock
 ```
 
-## 검증 방법
+## 검증과 CI
 
 ```bash
 npm run lint
@@ -139,8 +139,6 @@ npm run build
 
 `test:e2e`는 기존 개발 서버와 충돌하지 않도록 `5174` 포트를 사용합니다.
 Playwright E2E에는 axe 기반 WCAG 2.2 AA 검사, 키보드 탐색, 320px 리플로우, 200% 글자 확대 검증이 포함됩니다.
-
-## CI
 
 GitHub Actions는 push와 pull request마다 Node.js 22 환경에서 다음 검증을 수행합니다.
 
