@@ -3,6 +3,10 @@
 KB헬스케어 프론트엔드 과제 제출용 React SPA입니다.  
 제공된 [requirement.md](./docs/requirement.md)와 [openapi.yaml](./docs/openapi.yaml)을 기준으로 로그인, 대시보드, 할 일 목록/상세, 회원정보 화면을 구현했습니다.
 
+## 배포
+
+[KB Healthcare Frontend Assignment 바로가기](https://kb-healthcare-assignment.vercel.app)
+
 ## 테스트 계정
 
 ```text
