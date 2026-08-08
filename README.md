@@ -14,7 +14,7 @@ care@kbhealth.com / Password1
 | 영역 | 반영 내용 | 주요 구현 |
 | --- | --- | --- |
 | 공통 | React 19·TypeScript, 색상 토큰, Pretendard, 화면별 고유 아이콘 | [`package.json`](./package.json), [`index.css`](./src/index.css) |
-| 내비게이션 | 대시보드·할 일 라우트와 로그인 상태별 로그인·회원정보 진입점 | [`AppLayout.tsx`](./src/widgets/app-layout/AppLayout.tsx), [`router.tsx`](./src/app/routes/router.tsx) |
+| 내비게이션 | GNB에는 브랜드와 로그인 상태별 로그인·회원정보 진입점을 배치했습니다. 요구사항의 LNB(로컬 내비게이션) 역할인 대시보드·할 일 라우트 맵은 모바일 환경에 맞춰 하단 내비게이션(Bottom Navigation)으로 구현했습니다. | [`AppLayout.tsx`](./src/widgets/app-layout/AppLayout.tsx), [`router.tsx`](./src/app/routes/router.tsx) |
 | 로그인 | 이메일·비밀번호 검증, 제출 활성화 조건, 로그인 요청과 실패 모달 | [`SignInPage.tsx`](./src/pages/sign-in/SignInPage.tsx), [`sign-in-schema.ts`](./src/features/auth/sign-in-schema.ts) |
 | 인증 | access token 관리, refresh 요청, 보호 라우트, 세션 만료 안내 | [`AuthProvider.tsx`](./src/features/auth/AuthProvider.tsx), [`http-client.ts`](./src/shared/api/http-client.ts) |
 | 대시보드 | 일·해야할 일·한 일 통계 표시 | [`DashboardPage.tsx`](./src/pages/dashboard/DashboardPage.tsx) |

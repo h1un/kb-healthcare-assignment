@@ -61,7 +61,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           tabIndex={-1}
           aria-labelledby="page-title"
           className={cn(
-            "flex-1 px-7 py-7 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-ring",
+            "flex-1 px-7 py-7 focus:outline-none",
             shouldShowRouteNav ? "pb-[calc(7rem+env(safe-area-inset-bottom))]" : "pb-7",
           )}
         >
