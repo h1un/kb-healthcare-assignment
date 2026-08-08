@@ -1,16 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { ArrowRightIcon, CheckIcon, CircleIcon, ClipboardListIcon } from "lucide-react";
-import { getDashboard } from "@/entities/dashboard/api";
+import { dashboardQueryOptions } from "@/entities/dashboard/queries";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
 import { cn } from "@/shared/lib/utils";
 import { Skeleton } from "@/shared/ui/skeleton";
 
 export default function DashboardPage() {
-  const { data, isLoading, isLoadingError } = useQuery({
-    queryKey: ["dashboard"],
-    queryFn: getDashboard,
-  });
+  const { data, isLoading, isLoadingError } = useQuery(dashboardQueryOptions);
 
   const total = data?.numOfTask ?? 0;
   const done = data?.numOfDoneTask ?? 0;

@@ -1,12 +1,9 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useWindowVirtualizer } from "@tanstack/react-virtual";
-import { Link } from "@tanstack/react-router";
-import { ChevronRightIcon, CheckIcon, CircleIcon, ClipboardListIcon, RefreshCwIcon } from "lucide-react";
+import { ClipboardListIcon, RefreshCwIcon } from "lucide-react";
 import { useEffect, useRef } from "react";
-import { getTasks } from "@/entities/task/api";
-import type { TaskItem } from "@/shared/api/types";
-import { Badge } from "@/shared/ui/badge";
-import { cn } from "@/shared/lib/utils";
+import { taskListQueryOptions } from "@/entities/task/queries";
+import { TaskCard } from "@/entities/task/ui/TaskCard";
 import { Button } from "@/shared/ui/button";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/shared/ui/empty";
 import { Skeleton } from "@/shared/ui/skeleton";
@@ -22,12 +19,7 @@ export default function TaskListPage() {
     isLoading,
     isLoadingError,
     refetch,
-  } = useInfiniteQuery({
-    queryKey: ["tasks"],
-    queryFn: ({ pageParam }) => getTasks(pageParam),
-    initialPageParam: 1,
-    getNextPageParam: (lastPage, pages) => (lastPage.hasNext ? pages.length + 1 : undefined),
-  });
+  } = useInfiniteQuery(taskListQueryOptions);
   const tasks = data?.pages.flatMap((page) => page.data) ?? [];
   const rowCount = hasNextPage ? tasks.length + 1 : tasks.length;
   const rowVirtualizer = useWindowVirtualizer({
@@ -154,37 +146,5 @@ function LoadMoreRow({ hasError, onRetry }: { hasError: boolean; onRetry: () => 
       <span className="sr-only">다음 할 일을 불러오는 중입니다.</span>
       <Skeleton className="h-29 rounded-card" />
     </div>
-  );
-}
-
-function TaskCard({ task }: { task: TaskItem }) {
-  const isDone = task.status === "DONE";
-
-  return (
-    <Link
-      to="/task/$taskId"
-      params={{ taskId: task.id }}
-      className="flex h-29 items-center gap-3 rounded-card bg-card p-4 shadow-card transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring motion-reduce:transform-none xs:gap-5 xs:p-6"
-    >
-      <span
-        className={cn(
-          "grid size-11 shrink-0 place-items-center rounded-full xs:size-12",
-          isDone ? "bg-kb-blue/15 text-kb-blue" : "bg-kb-pink text-destructive",
-        )}
-      >
-        {isDone ? <CheckIcon aria-hidden="true" /> : <CircleIcon aria-hidden="true" />}
-      </span>
-      <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center gap-2">
-          <h2 className="truncate text-lg font-black text-kb-ink xs:text-xl">
-            <span className="sr-only">{task.id} </span>
-            {task.title}
-          </h2>
-          <Badge variant={isDone ? "secondary" : "destructive"}>{isDone ? "완료" : "해야 할 일"}</Badge>
-        </div>
-        <p className="mt-2 truncate text-sm font-bold text-muted-foreground xs:text-base">{task.memo}</p>
-      </div>
-      <ChevronRightIcon className="size-6 shrink-0 text-muted-foreground" aria-hidden="true" />
-    </Link>
   );
 }

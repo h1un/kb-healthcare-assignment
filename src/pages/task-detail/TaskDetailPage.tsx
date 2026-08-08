@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "@tanstack/react-router";
 import { ArrowLeftIcon, CalendarDaysIcon, ListChecksIcon, RefreshCwIcon } from "lucide-react";
-import { getTaskDetail } from "@/entities/task/api";
+import { getTaskDetailQueryOptions } from "@/entities/task/queries";
 import { DeleteTaskDialog } from "@/features/delete-task/DeleteTaskDialog";
 import { ApiError } from "@/shared/api/http-client";
 import { Badge } from "@/shared/ui/badge";
@@ -11,17 +11,7 @@ import { Skeleton } from "@/shared/ui/skeleton";
 
 export default function TaskDetailPage() {
   const { taskId } = useParams({ from: "/app/task/$taskId" });
-  const { data, error, isLoading, isLoadingError, refetch } = useQuery({
-    queryKey: ["task", taskId],
-    queryFn: () => getTaskDetail(taskId),
-    retry: (failureCount, queryError) => {
-      if (queryError instanceof ApiError && queryError.status === 404) {
-        return false;
-      }
-
-      return failureCount < 1;
-    },
-  });
+  const { data, error, isLoading, isLoadingError, refetch } = useQuery(getTaskDetailQueryOptions(taskId));
 
   const isNotFound = isLoadingError && error instanceof ApiError && error.status === 404;
 

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { LogOutIcon, UserRoundIcon } from "lucide-react";
-import { getUser } from "@/entities/user/api";
+import { userQueryOptions } from "@/entities/user/queries";
 import { useAuth } from "@/features/auth/AuthProvider";
 import { Button } from "@/shared/ui/button";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/shared/ui/empty";
@@ -8,10 +8,7 @@ import { Skeleton } from "@/shared/ui/skeleton";
 
 export default function MemberPage() {
   const { logout } = useAuth();
-  const { data, isLoading, isLoadingError, refetch } = useQuery({
-    queryKey: ["user"],
-    queryFn: getUser,
-  });
+  const { data, isLoading, isLoadingError, refetch } = useQuery(userQueryOptions);
 
   if (isLoading) {
     return (

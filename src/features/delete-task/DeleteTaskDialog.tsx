@@ -2,7 +2,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Trash2Icon } from "lucide-react";
 import { useEffect, useState, type FormEvent } from "react";
+import { dashboardQueryKey } from "@/entities/dashboard/queries";
 import { deleteTask } from "@/entities/task/api";
+import { taskQueryKeys } from "@/entities/task/queries";
 import { ApiError } from "@/shared/api/http-client";
 import { Button } from "@/shared/ui/button";
 import {
@@ -35,10 +37,10 @@ export function DeleteTaskDialog({ taskId }: DeleteTaskDialogProps) {
   } = useMutation({
     mutationFn: () => deleteTask(taskId),
     onSuccess: async () => {
-      queryClient.removeQueries({ queryKey: ["task", taskId], exact: true });
+      queryClient.removeQueries({ queryKey: taskQueryKeys.detail(taskId), exact: true });
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["tasks"] }),
-        queryClient.invalidateQueries({ queryKey: ["dashboard"] }),
+        queryClient.invalidateQueries({ queryKey: taskQueryKeys.list() }),
+        queryClient.invalidateQueries({ queryKey: dashboardQueryKey }),
       ]);
       setOpen(false);
       await navigate({ to: "/task" });

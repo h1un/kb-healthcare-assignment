@@ -1,7 +1,7 @@
 import { createRootRoute, createRoute, createRouter, Navigate, Outlet, useRouterState } from "@tanstack/react-router";
 import { lazy, Suspense, useEffect, useRef, type ComponentType } from "react";
 import { useAuth } from "@/features/auth/AuthProvider";
-import { SessionExpiredDialog } from "@/features/session-expired/SessionExpiredDialog";
+import { SessionExpiredDialog } from "@/features/auth/SessionExpiredDialog";
 import { NotFoundPage } from "@/pages/not-found/NotFoundPage";
 import { AppLayout } from "@/widgets/app-layout/AppLayout";
 

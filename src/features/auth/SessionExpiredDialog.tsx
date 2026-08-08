@@ -1,6 +1,5 @@
 import { useNavigate } from "@tanstack/react-router";
 import type { KeyboardEvent } from "react";
-import { useAuth } from "@/features/auth/AuthProvider";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,6 +10,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/shared/ui/alert-dialog";
+import { useAuth } from "./AuthProvider";
 
 export function SessionExpiredDialog() {
   const navigate = useNavigate();
