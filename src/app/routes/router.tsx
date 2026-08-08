@@ -2,24 +2,27 @@ import { createRootRoute, createRoute, createRouter, Navigate, Outlet, useRouter
 import { lazy, Suspense, useEffect, useRef, type ComponentType } from "react";
 import { useAuth } from "@/features/auth/AuthProvider";
 import { SessionExpiredDialog } from "@/features/auth/SessionExpiredDialog";
+import DashboardPage from "@/pages/dashboard/DashboardPage";
 import { NotFoundPage } from "@/pages/not-found/NotFoundPage";
+import SignInPage from "@/pages/sign-in/SignInPage";
+import { Skeleton } from "@/shared/ui/skeleton";
 import { AppLayout } from "@/widgets/app-layout/AppLayout";
 
-const DashboardPage = lazy(() => import("@/pages/dashboard/DashboardPage"));
 const MemberPage = lazy(() => import("@/pages/member/MemberPage"));
-const SignInPage = lazy(() => import("@/pages/sign-in/SignInPage"));
 const TaskDetailPage = lazy(() => import("@/pages/task-detail/TaskDetailPage"));
 const TaskListPage = lazy(() => import("@/pages/task-list/TaskListPage"));
 
 function RouteFallback() {
   return (
-    <div
-      role="status"
-      aria-live="polite"
-      className="flex min-h-80 items-center justify-center px-6 text-center text-sm font-bold text-muted-foreground"
-    >
-      화면을 불러오고 있어요.
-    </div>
+    <section className="flex flex-col gap-5" aria-busy="true">
+      <p className="sr-only" role="status">
+        화면을 불러오는 중입니다.
+      </p>
+      <Skeleton className="h-5 w-32 rounded-xl" />
+      <Skeleton className="h-29 rounded-card" />
+      <Skeleton className="h-29 rounded-card" />
+      <Skeleton className="h-29 rounded-card" />
+    </section>
   );
 }
 
@@ -126,7 +129,7 @@ const publicRoute = createRoute({
 const dashboardRoute = createRoute({
   getParentRoute: () => appRoute,
   path: "/",
-  component: withSuspense(DashboardPage),
+  component: DashboardPage,
 });
 
 const taskListRoute = createRoute({
@@ -150,7 +153,7 @@ const memberRoute = createRoute({
 const signInRoute = createRoute({
   getParentRoute: () => publicRoute,
   path: "/sign-in",
-  component: withSuspense(SignInPage),
+  component: SignInPage,
 });
 
 const routeTree = rootRoute.addChildren([
